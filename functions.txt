@@ -1,0 +1,49 @@
+* IRowColumnDS
+- [X] getX(int index) const
+- [X] compress()
+- [X] IRowColumnDS(int M, int N, int nz, bool value)
+- [X] computeCCS()
+- [X] computeCRS()
+- [X] entry(int row, int col, double value)
+
+
+* CSegMatrix
+- [X] ido(int *order)
+- [X] lfo(int *order)
+- [X] slo(int *list)
+- [X] rlf(int *ngrp)
+
+- [ ] CSegMatrix(int M, int N, int nz,bool value, PartitionLoader *partitionLoader)
+
+- [X] computedegree()
+- [X] greedycolor(int *list, int *ngrp)
+
+* Matrix
+- [X] ido(int *order )
+- [X] lfo(int *order)
+- [X] slo(int *list)
+- [X] sdo(int *ngrp)
+- [X] rlf(int *ngrp)
+
+- [X] computedegree()
+- [X] greedycolor(int *order, int *color)
+
+- [ ] Matrix(int M,int N,int nz, bool value)
+
+- [ ] mixedOrderingMethod(int *ngrp)
+- [ ] ordering_method oMethod, int *ngrp)
+- [ ] rlf_ido(int *ngrp)
+- [ ] rlf_lfo(int *ngrp)
+- [ ] rlf_slo(int *ngrp)
+- [ ] lfo_rlf(int *ngrp)
+- [ ] ido_rlf(int *ngrp)
+
+* IMatrix
+- [ ] IMatrix(int M, int N, int nz, bool value)
+- [ ] addColumn(int *head,int *next,int *previous, int numdeg, int jcol)
+- [ ] buildPriorityQueue(int n, int *ndeg, int *head, int *next, int *previous)
+- [ ] deleteColumn(int *head,int *next,int *previous,int numdeg,int jcol)
+
+
+- [ ] indexsort(int n,int nmax,int *num,int mode,int *index,int *last,int *next)
+

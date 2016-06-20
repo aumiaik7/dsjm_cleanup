@@ -1,0 +1,10 @@
+1.deleted cseg parts from processCommandLineParameters(), gcolor.cc
+2.Deleted cseg related methods from runOrderingAndColoringAlgorithm()  driver.cc
+3.Deleted cseg related methods from run() after    IMatrix *matrix = NULL;
+    try
+    {..., driver.cc
+4. deleted 2 if else after if ( configuration->statistics_only == true)
+        {, driver.cc
+5. deleted 2 if else inside  if(configuration->verify)
+        {
+            writeGraphDescription(configuration,matrix);

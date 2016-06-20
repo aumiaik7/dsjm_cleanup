@@ -1,0 +1,7 @@
+Import('env')
+env.Program('gcolor', ['gcolor.cpp','Matrix.cpp','CSegMatrix.cpp' , 'mmio.cpp' , 'CLI.cpp'])
+# Repository('/home/hasanm/fileSystem/M-R/Programming/F-L/log4cpp/')
+
+
+
+
