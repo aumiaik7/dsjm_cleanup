@@ -98,9 +98,9 @@ gcolor-driver.o: driver.cc \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/x86_64-redhat-linux/bits/c++io.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/fstream.tcc \
  ../src/Timer.h ../src/Definitions.h driver.hh ../src/Configuration.hh \
- ../src/CLI.h ../src/CLI.h gcolor.hh ../src/CSegMatrix.hh \
- ../src/Matrix.hh ../src/IMatrix.hh ../src/IRowColumnDS.hh \
- ../src/BucketPQ.hh ../src/detail/PriorityQueue.hh \
+ ../src/CLI.h ../src/CLI.h gcolor.hh ../src/mmio.h ../src/Matrix.hh \
+ ../src/IMatrix.hh ../src/IRowColumnDS.hh ../src/BucketPQ.hh \
+ ../src/detail/PriorityQueue.hh \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/algorithm \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algo.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/algorithmfwd.h \
@@ -125,11 +125,7 @@ gcolor-driver.o: driver.cc \
  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
  /usr/include/bits/mathinline.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cmath.tcc \
- ../src/SimplePartitionedMatrix.hh ../src/PartitionLoader.hh \
- ../src/_my_functor.hh ../src/Result.hh ../src/Configuration.hh \
- ../src/mmio.h ../src/Matrix.hh ../src/Result.hh ../src/NNZTag.hh \
- ../src/PartitionLoader.hh ../src/SimplePartitionedMatrix.hh \
- ../src/ProfitPartitionMatrix.hh
+ ../src/Result.hh ../src/Configuration.hh
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iostream:
 
@@ -385,7 +381,7 @@ driver.hh:
 
 gcolor.hh:
 
-../src/CSegMatrix.hh:
+../src/mmio.h:
 
 ../src/Matrix.hh:
 
@@ -455,26 +451,6 @@ gcolor.hh:
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cmath.tcc:
 
-../src/SimplePartitionedMatrix.hh:
-
-../src/PartitionLoader.hh:
-
-../src/_my_functor.hh:
-
 ../src/Result.hh:
 
 ../src/Configuration.hh:
-
-../src/mmio.h:
-
-../src/Matrix.hh:
-
-../src/Result.hh:
-
-../src/NNZTag.hh:
-
-../src/PartitionLoader.hh:
-
-../src/SimplePartitionedMatrix.hh:
-
-../src/ProfitPartitionMatrix.hh:

@@ -113,13 +113,11 @@ ForwardDifference-Matrix.o: ../src/Matrix.cpp \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_map.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_multimap.h \
- ../src/CLI.h ../src/HeapPQ.hh ../src/SLO.hh ../src/OrderingMethod.hh \
- ../src/IDO.hh ../src/Utility.h \
+ ../src/CLI.h ../src/Utility.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdio \
  /usr/include/libio.h /usr/include/_G_config.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/bits/stdio.h ../src/LFO.hh ../src/RLF.hh \
- ../src/NullOrderingMethod.hh
+ /usr/include/bits/stdio.h ../src/RLF.hh ../src/OrderingMethod.hh
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iostream:
 
@@ -401,14 +399,6 @@ ForwardDifference-Matrix.o: ../src/Matrix.cpp \
 
 ../src/CLI.h:
 
-../src/HeapPQ.hh:
-
-../src/SLO.hh:
-
-../src/OrderingMethod.hh:
-
-../src/IDO.hh:
-
 ../src/Utility.h:
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdio:
@@ -423,8 +413,6 @@ ForwardDifference-Matrix.o: ../src/Matrix.cpp \
 
 /usr/include/bits/stdio.h:
 
-../src/LFO.hh:
-
 ../src/RLF.hh:
 
-../src/NullOrderingMethod.hh:
+../src/OrderingMethod.hh:

@@ -1,4 +1,4 @@
-CORE_SOURCES = mmio.cpp Matrix.cpp  CLI.cpp Utility.cc Timer.cpp  IMatrix.cc  Configuration.cc  IRowColumnDS.cc 
+CORE_SOURCES = mmio.cpp Matrix.cpp  CLI.cpp Utility.cc Timer.cpp  IMatrix.cc  Configuration.cc  IRowColumnDS.cc ProfitPartitionMatrix.cc
 ## Profiling Flags
 ## CPP_PROFILING_FLAGS = -g3 -O0 -pg
 ## CPP_PROFILING_FLAGS = -g -O0

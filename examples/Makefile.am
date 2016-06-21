@@ -1,4 +1,4 @@
-CORE_SOURCE_FILES = $(top_srcdir)/src/mmio.cpp $(top_srcdir)/src/Matrix.cpp  $(top_srcdir)/src/CLI.cpp $(top_srcdir)/src/Utility.cc $(top_srcdir)/src/Timer.cpp $(top_srcdir)/src/PartitionLoader.cc $(top_srcdir)/src/IMatrix.cc $(top_srcdir)/src/CSegMatrix.cpp $(top_srcdir)/src/Configuration.cc $(top_srcdir)/src/NNZTag.cc $(top_srcdir)/src/SimplePartitionedMatrix.cc $(top_srcdir)/src/IRowColumnDS.cc $(top_srcdir)/src/ProfitPartitionMatrix.cc
+CORE_SOURCE_FILES = $(top_srcdir)/src/mmio.cpp $(top_srcdir)/src/Matrix.cpp  $(top_srcdir)/src/CLI.cpp $(top_srcdir)/src/Utility.cc $(top_srcdir)/src/Timer.cpp  $(top_srcdir)/src/IMatrix.cc  $(top_srcdir)/src/Configuration.cc  $(top_srcdir)/src/IRowColumnDS.cc 
 
 # Include Directory for compilation
 INCLUDES 	= -I$(top_srcdir)/src

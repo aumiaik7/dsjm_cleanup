@@ -13,16 +13,11 @@
 
 #include "CLI.h"
 #include "gcolor.hh"
-#include "CSegMatrix.hh"
 #include "mmio.h"
 #include "Matrix.hh"
 #include "Result.hh"
-#include "NNZTag.hh"
 
 
-#include "PartitionLoader.hh"
-#include "SimplePartitionedMatrix.hh"
-#include "ProfitPartitionMatrix.hh"
 
 #define CLK_TCK 100
 #define MAXLINE 100
@@ -172,27 +167,6 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
             // maxgrp = matrix->seq();
 
             coloring_time = timer.GetWallTime();
-        }
-        else if ( configuration->oMethod == CLI::RLF_SLO)
-        {
-            /*if(configuration->is_cseg)
-            {
-                std::cout << "RLF_SLO function is not defined in CSegMatrix yet!" << std::endl;
-            }*/
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*>(matrix);
-            int *list = new int[configuration->N+1];
-            _matrix->rlf_slo(ngrp);
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
         }
         else
         {
@@ -376,15 +350,11 @@ int run(Configuration *configuration)
      *
      */
 
-
     FILE *pf;
-    PartitionLoader *partitionLoader;
     char line[MAXLINE+1];
 
     struct rusage runtime;
     int t1, t2,t3,t4;
-
-
 
 
     /**

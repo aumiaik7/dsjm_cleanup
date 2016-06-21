@@ -112,11 +112,11 @@ Matrix.o: Matrix.cpp \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_map.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_multimap.h \
- CLI.h HeapPQ.hh SLO.hh OrderingMethod.hh IDO.hh Utility.h \
+ CLI.h Utility.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdio \
  /usr/include/libio.h /usr/include/_G_config.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/bits/stdio.h LFO.hh RLF.hh NullOrderingMethod.hh
+ /usr/include/bits/stdio.h RLF.hh OrderingMethod.hh
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/iostream:
 
@@ -398,14 +398,6 @@ NNZTag.hh:
 
 CLI.h:
 
-HeapPQ.hh:
-
-SLO.hh:
-
-OrderingMethod.hh:
-
-IDO.hh:
-
 Utility.h:
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/cstdio:
@@ -420,8 +412,6 @@ Utility.h:
 
 /usr/include/bits/stdio.h:
 
-LFO.hh:
-
 RLF.hh:
 
-NullOrderingMethod.hh:
+OrderingMethod.hh:

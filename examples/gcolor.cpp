@@ -9,15 +9,12 @@
 
 #include "CLI.h"
 #include "gcolor.hh"
-#include "CSegMatrix.hh"
 #include "mmio.h"
 #include "Matrix.hh"
 #include "Result.hh"
 #include "Configuration.hh"
 #include "driver.hh"
 
-
-#include "PartitionLoader.hh"
 #include "Utility.h"
 
 using namespace std;
