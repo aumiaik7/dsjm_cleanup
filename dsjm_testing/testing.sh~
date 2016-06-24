@@ -22,10 +22,10 @@ if [ "$1" = "slo" ] || [ "$1" = "ido" ] || [ "$1" = "rlf" ] || [ "$1" = "lfo" ] 
 
 		#Put gcolor result and profilings in appropriate folders
 		../examples/gcolor -i "$file" -m "$1" > Profiling_Result/"$1"/${name[1]}_Result.out
-		cd ../examples
-		gprof gcolor > ../dsjm_testing/Profiling_Result/"$1"/${name[1]}_Prof.out
-		cd ../dsjm_testing
+		#cd ../examples
+		gprof gcolor ../dsjm_testing/gmon.out> ../dsjm_testing/Profiling_Result/"$1"/${name[1]}_Prof.out		#cd ../dsjm_testing
 	done
+	echo "Done!!"
 else
 	echo "Wrong method! Please pass slo/ido/rlf/lfo/sdo as argument"
 fi

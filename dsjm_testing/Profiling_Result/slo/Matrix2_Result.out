@@ -2,7 +2,7 @@
     commandLine: Not Given
     inputFile: data/Matrix2.mtx
     segmented: no
-    method: IDO
+    method: SLO
     matrix_M: 180
     matrix_N: 180
     matrix_NNZ: 625

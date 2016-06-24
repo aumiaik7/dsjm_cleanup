@@ -105,7 +105,7 @@ AUTOMAKE = ${SHELL} /home/khanai/Study/Summer_2016/dsjm_cleanup/config/missing -
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -pg
+CFLAGS = -g -O2
 CPPFLAGS = 
 CPPUNIT_CFLAGS = 
 CPPUNIT_CONFIG = /usr/bin/cppunit-config

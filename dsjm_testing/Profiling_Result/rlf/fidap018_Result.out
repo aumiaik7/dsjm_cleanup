@@ -7,4 +7,4 @@
     matrix_N: 5773
     matrix_NNZ: 69335
     totalColors: 18
-    coloring_time: 0.02
+    coloring_time: 0.16
