@@ -1,4 +1,6 @@
 CORE_SOURCES = mmio.cpp Matrix.cpp  CLI.cpp Utility.cc Timer.cpp  IMatrix.cc  Configuration.cc  IRowColumnDS.cc 
+INCLUDEdir = -I$(top_srcdir)/src
+INCLUDE_HEADERS = BucketPQ.hh CLI.h Definitions.h Configuration.hh IMatrix.hh IRowColumnDS.hh Matrix.hh mmio.h NNZTag.hh OrderingMethod.hh detail/PriorityQueue.hh Result.hh RLF.hh Timer.h Utility.h
 ## Profiling Flags
 ## CPP_PROFILING_FLAGS = -g3 -O0 -pg
 ## CPP_PROFILING_FLAGS = -g -O0

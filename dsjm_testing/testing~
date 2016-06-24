@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+for file in *
+do
+ # do something on "$file"
+  
+	#split file name using '_' delimeter 
+	OIFS="$IFS"
+	IFS='.'
+	read -a name <<< "${file}"
+	#IFS="$OIFS"
+
+	mkdir -p Profiling_Result
+	echo ${name[0]}
+	echo $1
+	
+	
+ 
+done

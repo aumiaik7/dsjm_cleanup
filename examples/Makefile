@@ -16,6 +16,7 @@
 
 
 
+
 pkgdatadir = $(datadir)/dsjm
 pkgincludedir = $(includedir)/dsjm
 pkglibdir = $(libdir)/dsjm
@@ -34,7 +35,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2) $(am__EXEEXT_3)
 subdir = examples
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(INCLUDE_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -45,7 +47,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__EXEEXT_1 = ForwardDifference$(EXEEXT)
 am__EXEEXT_2 = dsjmverify$(EXEEXT)
 am__EXEEXT_3 = gcolor$(EXEEXT)
-am__installdirs = "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(INCLUDEdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__objects_1 = ForwardDifference-ForwardDifference.$(OBJEXT) \
 	ForwardDifference-StructuredJacobian.$(OBJEXT)
@@ -88,6 +90,28 @@ SOURCES = $(ForwardDifference_SOURCES) $(dsjmverify_SOURCES) \
 	$(gcolor_SOURCES)
 DIST_SOURCES = $(ForwardDifference_SOURCES) $(dsjmverify_SOURCES) \
 	$(gcolor_SOURCES)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+HEADERS = $(INCLUDE_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -99,7 +123,7 @@ AUTOMAKE = ${SHELL} /home/khanai/Study/Summer_2016/dsjm_cleanup/config/missing -
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -pg
 CPPFLAGS = 
 CPPUNIT_CFLAGS = 
 CPPUNIT_CONFIG = /usr/bin/cppunit-config
@@ -182,11 +206,11 @@ top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
 CORE_SOURCE_FILES = $(top_srcdir)/src/mmio.cpp $(top_srcdir)/src/Matrix.cpp  $(top_srcdir)/src/CLI.cpp $(top_srcdir)/src/Utility.cc $(top_srcdir)/src/Timer.cpp  $(top_srcdir)/src/IMatrix.cc  $(top_srcdir)/src/Configuration.cc  $(top_srcdir)/src/IRowColumnDS.cc 
-
+INCLUDEdir = -I$(top_srcdir)/example
+INCLUDE_HEADERS = driver.hh Eye.hh FD.hh gcolor.hh StructuredJacobian.hh
 # Include Directory for compilation
 INCLUDES = -I$(top_srcdir)/src
 #LIB = $(top_srcdir)/libs/libcsparse.a
-#INCLUDE_HEADERS = mmio.h Matrix.h CLI.h
 FORWARDDIFFERENCE_SOURCE_FILES = ForwardDifference.cc  StructuredJacobian.cc
 FORWARDDIFFERENCE = ForwardDifference
 VERIFY = dsjmverify
@@ -613,6 +637,26 @@ gcolor-IRowColumnDS.obj: $(top_srcdir)/src/IRowColumnDS.cc
 #	source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+install-INCLUDEHEADERS: $(INCLUDE_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(INCLUDEdir)" || $(MKDIR_P) "$(DESTDIR)$(INCLUDEdir)"
+	@list='$(INCLUDE_HEADERS)'; test -n "$(INCLUDEdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(INCLUDEdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(INCLUDEdir)" || exit $$?; \
+	done
+
+uninstall-INCLUDEHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(INCLUDE_HEADERS)'; test -n "$(INCLUDEdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(INCLUDEdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(INCLUDEdir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -698,9 +742,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(INCLUDEdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -750,7 +794,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-INCLUDEHEADERS
 
 install-dvi: install-dvi-am
 
@@ -795,22 +839,23 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS
+uninstall-am: uninstall-INCLUDEHEADERS uninstall-binPROGRAMS
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
 	clean-generic ctags distclean distclean-compile \
 	distclean-generic distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am uninstall-binPROGRAMS
+	html-am info info-am install install-INCLUDEHEADERS install-am \
+	install-binPROGRAMS install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags uninstall uninstall-INCLUDEHEADERS uninstall-am \
+	uninstall-binPROGRAMS
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

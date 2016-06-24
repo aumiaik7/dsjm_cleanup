@@ -16,6 +16,7 @@
 
 
 
+
 pkgdatadir = $(datadir)/dsjm
 pkgincludedir = $(includedir)/dsjm
 pkglibdir = $(libdir)/dsjm
@@ -33,7 +34,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = src
-DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = README $(INCLUDE_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -62,6 +64,29 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(libmatrix_a_SOURCES)
 DIST_SOURCES = $(libmatrix_a_SOURCES)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__installdirs = "$(DESTDIR)$(INCLUDEdir)"
+HEADERS = $(INCLUDE_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -73,7 +98,7 @@ AUTOMAKE = ${SHELL} /home/khanai/Study/Summer_2016/dsjm_cleanup/config/missing -
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -pg
 CPPFLAGS = 
 CPPUNIT_CFLAGS = 
 CPPUNIT_CONFIG = /usr/bin/cppunit-config
@@ -156,6 +181,8 @@ top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
 CORE_SOURCES = mmio.cpp Matrix.cpp  CLI.cpp Utility.cc Timer.cpp  IMatrix.cc  Configuration.cc  IRowColumnDS.cc 
+INCLUDEdir = -I$(top_srcdir)/src
+INCLUDE_HEADERS = BucketPQ.hh CLI.h Definitions.h Configuration.hh IMatrix.hh IRowColumnDS.hh Matrix.hh mmio.h NNZTag.hh OrderingMethod.hh detail/PriorityQueue.hh Result.hh RLF.hh Timer.h Utility.h
 noinst_LIBRARIES = libmatrix.a
 libmatrix_a_SOURCES = $(CORE_SOURCES)
 all: all-am
@@ -242,6 +269,26 @@ include ./$(DEPDIR)/mmio.Po
 #	source='$<' object='$@' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+install-INCLUDEHEADERS: $(INCLUDE_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(INCLUDEdir)" || $(MKDIR_P) "$(DESTDIR)$(INCLUDEdir)"
+	@list='$(INCLUDE_HEADERS)'; test -n "$(INCLUDEdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(INCLUDEdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(INCLUDEdir)" || exit $$?; \
+	done
+
+uninstall-INCLUDEHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(INCLUDE_HEADERS)'; test -n "$(INCLUDEdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(INCLUDEdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(INCLUDEdir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -327,8 +374,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LIBRARIES) $(HEADERS)
 installdirs:
+	for dir in "$(DESTDIR)$(INCLUDEdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -376,7 +426,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-INCLUDEHEADERS
 
 install-dvi: install-dvi-am
 
@@ -421,22 +471,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-INCLUDEHEADERS
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-noinstLIBRARIES ctags distclean distclean-compile \
 	distclean-generic distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
+	html-am info info-am install install-INCLUDEHEADERS install-am \
+	install-data install-data-am install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
-	uninstall-am
+	uninstall-INCLUDEHEADERS uninstall-am
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -1,0 +1,263 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+100.01      0.01     0.01   111630     0.00     0.00  _fini
+  0.00      0.01     0.00        4     0.00     0.00  run(Configuration*)
+  0.00      0.01     0.00        4     0.00     0.00  IRowColumnDS::getRowMax() const
+  0.00      0.01     0.00        3     0.00     0.01  Matrix::ido(int*)
+  0.00      0.01     0.00        2     0.00     0.00  Matrix::lfo(int*)
+  0.00      0.01     0.00        2     0.00     0.00  Matrix::rlf(int*)
+  0.00      0.01     0.00        2     0.00     0.00  Matrix::sdo(int*)
+  0.00      0.01     0.00        2     0.00     0.00  __do_global_ctors_aux
+  0.00      0.01     0.00        1     0.00     0.00  mm_read_banner(_IO_FILE*, char (*) [4])
+  0.00      0.01     0.00        1     0.00     0.00  mm_write_banner(_IO_FILE*, char*)
+  0.00      0.01     0.00        1     0.00     9.98  mm_write_mtx_crd(char*, int, int, int, int*, int*, double*, char*)
+  0.00      0.01     0.00        1     0.00     0.00  IRowColumnDS::computeCCS()
+  0.00      0.01     0.00        1     0.00     0.00  IRowColumnDS::computeCRS()
+  0.00      0.01     0.00        1     0.00     0.00  IRowColumnDS::entry(int, int, double)
+  0.00      0.01     0.00        1     0.00     0.00  __libc_csu_init
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 99.99% of 0.01 seconds
+
+index % time    self  children    called     name
+[1]    100.0    0.01    0.00  111630+4       <cycle 1 as a whole> [1]
+                0.01    0.00  111630+9           _fini <cycle 1> [2]
+                0.00    0.00       4+2           run(Configuration*) <cycle 1> [17]
+-----------------------------------------------
+                                   9             _fini <cycle 1> [2]
+                                   2             run(Configuration*) <cycle 1> [17]
+                0.00    0.00       1/111630      void writeGraphDescription<IMatrix>(Configuration*, IMatrix*) [11]
+                0.00    0.00       1/111630      mm_read_mtx_crd_data(_IO_FILE*, int, int, int, int*, int*, double*, char*) [7]
+                0.00    0.00       3/111630      Matrix::rlf(int*) [6]
+                0.00    0.00       4/111630      void writeNormalColoring<IMatrix>(Configuration*, IMatrix*, Result, int*) [3]
+                0.00    0.00     237/111630      Matrix::ido(int*) [5]
+                0.01    0.00  111382/111630      mm_write_mtx_crd(char*, int, int, int, int*, int*, double*, char*) [4]
+[2]    100.0    0.01    0.00  111630+9       _fini <cycle 1> [2]
+                0.00    0.00       1/2           Matrix::sdo(int*) [20]
+                0.00    0.00       1/1           IRowColumnDS::computeCCS() [24]
+                0.00    0.00       1/1           __libc_csu_init [27]
+                                   2             run(Configuration*) <cycle 1> [17]
+                                   9             _fini <cycle 1> [2]
+-----------------------------------------------
+                                                 <spontaneous>
+[3]     99.8    0.00    0.01                 void writeNormalColoring<IMatrix>(Configuration*, IMatrix*, Result, int*) [3]
+                0.00    0.01       1/1           mm_write_mtx_crd(char*, int, int, int, int*, int*, double*, char*) [4]
+                0.00    0.00       4/111630      _fini <cycle 1> [2]
+                0.00    0.00       1/4           IRowColumnDS::getRowMax() const [18]
+-----------------------------------------------
+                0.00    0.01       1/1           void writeNormalColoring<IMatrix>(Configuration*, IMatrix*, Result, int*) [3]
+[4]     99.8    0.00    0.01       1         mm_write_mtx_crd(char*, int, int, int, int*, int*, double*, char*) [4]
+                0.01    0.00  111382/111630      _fini <cycle 1> [2]
+-----------------------------------------------
+                0.00    0.00       1/3           Result::~Result() [8]
+                0.00    0.00       1/3           mm_read_mtx_crd_data(_IO_FILE*, int, int, int, int*, int*, double*, char*) [7]
+                0.00    0.00       1/3           Matrix::rlf(int*) [6]
+[5]      0.2    0.00    0.00       3         Matrix::ido(int*) [5]
+                0.00    0.00     237/111630      _fini <cycle 1> [2]
+-----------------------------------------------
+                0.00    0.00       1/2           RunningTimeInfo runOrderingAndColoringAlgorithm<IMatrix, ColPack::Timer>(Configuration*, IMatrix*, ColPack::Timer&) [9]
+                0.00    0.00       1/2           Result::printMatrixInfo() [10]
+[6]      0.1    0.00    0.00       2         Matrix::rlf(int*) [6]
+                0.00    0.00       1/3           Matrix::ido(int*) [5]
+                0.00    0.00       3/111630      _fini <cycle 1> [2]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]      0.1    0.00    0.00                 mm_read_mtx_crd_data(_IO_FILE*, int, int, int, int*, int*, double*, char*) [7]
+                0.00    0.00       1/3           Matrix::ido(int*) [5]
+                0.00    0.00       1/111630      _fini <cycle 1> [2]
+                0.00    0.00       2/2           __do_global_ctors_aux [21]
+                0.00    0.00       2/4           IRowColumnDS::getRowMax() const [18]
+                0.00    0.00       1/2           Matrix::sdo(int*) [20]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]      0.1    0.00    0.00                 Result::~Result() [8]
+                0.00    0.00       1/3           Matrix::ido(int*) [5]
+                0.00    0.00       1/1           mm_write_banner(_IO_FILE*, char*) [23]
+                0.00    0.00       1/1           mm_read_banner(_IO_FILE*, char (*) [4]) [22]
+-----------------------------------------------
+                                                 <spontaneous>
+[9]      0.0    0.00    0.00                 RunningTimeInfo runOrderingAndColoringAlgorithm<IMatrix, ColPack::Timer>(Configuration*, IMatrix*, ColPack::Timer&) [9]
+                0.00    0.00       1/2           Matrix::rlf(int*) [6]
+                0.00    0.00       1/111630      run(Configuration*) <cycle 1> [17]
+                0.00    0.00       1/1           IRowColumnDS::entry(int, int, double) [26]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     0.0    0.00    0.00                 Result::printMatrixInfo() [10]
+                0.00    0.00       1/2           Matrix::rlf(int*) [6]
+                0.00    0.00       1/4           IRowColumnDS::getRowMax() const [18]
+-----------------------------------------------
+                                                 <spontaneous>
+[11]     0.0    0.00    0.00                 void writeGraphDescription<IMatrix>(Configuration*, IMatrix*) [11]
+                0.00    0.00       1/111630      _fini <cycle 1> [2]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     0.0    0.00    0.00                 void readData<IMatrix>(Configuration*, _IO_FILE*, IMatrix*) [12]
+                0.00    0.00       1/111630      run(Configuration*) <cycle 1> [17]
+-----------------------------------------------
+                                   2             run(Configuration*) <cycle 1> [17]
+                                   2             _fini <cycle 1> [2]
+                0.00    0.00       1/111630      void readData<IMatrix>(Configuration*, _IO_FILE*, IMatrix*) [12]
+                0.00    0.00       1/111630      RunningTimeInfo runOrderingAndColoringAlgorithm<IMatrix, ColPack::Timer>(Configuration*, IMatrix*, ColPack::Timer&) [9]
+[17]     0.0    0.00    0.00       4+2       run(Configuration*) <cycle 1> [17]
+                0.00    0.00       2/2           Matrix::lfo(int*) [19]
+                0.00    0.00       1/1           IRowColumnDS::computeCRS() [25]
+                                   2             _fini <cycle 1> [2]
+                                   2             run(Configuration*) <cycle 1> [17]
+-----------------------------------------------
+                0.00    0.00       1/4           void writeNormalColoring<IMatrix>(Configuration*, IMatrix*, Result, int*) [3]
+                0.00    0.00       1/4           Result::printMatrixInfo() [10]
+                0.00    0.00       2/4           mm_read_mtx_crd_data(_IO_FILE*, int, int, int, int*, int*, double*, char*) [7]
+[18]     0.0    0.00    0.00       4         IRowColumnDS::getRowMax() const [18]
+-----------------------------------------------
+                0.00    0.00       2/2           run(Configuration*) <cycle 1> [17]
+[19]     0.0    0.00    0.00       2         Matrix::lfo(int*) [19]
+-----------------------------------------------
+                0.00    0.00       1/2           mm_read_mtx_crd_data(_IO_FILE*, int, int, int, int*, int*, double*, char*) [7]
+                0.00    0.00       1/2           _fini <cycle 1> [2]
+[20]     0.0    0.00    0.00       2         Matrix::sdo(int*) [20]
+-----------------------------------------------
+                0.00    0.00       2/2           mm_read_mtx_crd_data(_IO_FILE*, int, int, int, int*, int*, double*, char*) [7]
+[21]     0.0    0.00    0.00       2         __do_global_ctors_aux [21]
+-----------------------------------------------
+                0.00    0.00       1/1           Result::~Result() [8]
+[22]     0.0    0.00    0.00       1         mm_read_banner(_IO_FILE*, char (*) [4]) [22]
+-----------------------------------------------
+                0.00    0.00       1/1           Result::~Result() [8]
+[23]     0.0    0.00    0.00       1         mm_write_banner(_IO_FILE*, char*) [23]
+-----------------------------------------------
+                0.00    0.00       1/1           _fini <cycle 1> [2]
+[24]     0.0    0.00    0.00       1         IRowColumnDS::computeCCS() [24]
+-----------------------------------------------
+                0.00    0.00       1/1           run(Configuration*) <cycle 1> [17]
+[25]     0.0    0.00    0.00       1         IRowColumnDS::computeCRS() [25]
+-----------------------------------------------
+                0.00    0.00       1/1           RunningTimeInfo runOrderingAndColoringAlgorithm<IMatrix, ColPack::Timer>(Configuration*, IMatrix*, ColPack::Timer&) [9]
+[26]     0.0    0.00    0.00       1         IRowColumnDS::entry(int, int, double) [26]
+-----------------------------------------------
+                0.00    0.00       1/1           _fini <cycle 1> [2]
+[27]     0.0    0.00    0.00       1         __libc_csu_init [27]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+  [22] mm_read_banner(_IO_FILE*, char (*) [4]) [26] IRowColumnDS::entry(int, int, double) [21] __do_global_ctors_aux
+  [23] mm_write_banner(_IO_FILE*, char*) [5] Matrix::ido(int*) [27] __libc_csu_init
+   [4] mm_write_mtx_crd(char*, int, int, int, int*, int*, double*, char*) [19] Matrix::lfo(int*) [2] _fini
+  [17] run(Configuration*)     [6] Matrix::rlf(int*)       [1] <cycle 1>
+  [24] IRowColumnDS::computeCCS() [20] Matrix::sdo(int*)
+  [25] IRowColumnDS::computeCRS() [18] IRowColumnDS::getRowMax() const
