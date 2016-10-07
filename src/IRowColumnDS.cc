@@ -12,8 +12,8 @@ using namespace std;
  *
  * Pre-condition: 	None.
  *
- * Post-condition:  IRowColumnDS object is constructed with memory allocated to <id:indRow>,
- *                  <id:indCol>, <id:jpntr>, <id:ipntr> and <id:x>. <id:x> is is only allocated
+ * Post-condition:  IRowColumnDS object is constructed with memory allocated to <id:row_ind>,
+ *                  <id:col_ind>, <id:jpntr>, <id:ipntr> and <id:x>. <id:x> is is only allocated
  *                  memory if member variable <id:value> evaluates to true.
  */
 
@@ -24,8 +24,8 @@ IRowColumnDS::IRowColumnDS(int M, int N, int p_nz, bool p_value)
        value(p_value),
        entry_index(1)
 {
-    indRow = new int[nz + 1];
-    indCol = new int[nz + 1];
+    row_ind = new int[nz + 1];
+    col_ind = new int[nz + 1];
     jpntr = new int[N + 2];
     ipntr = new int[M + 2];
     if(value)
@@ -39,8 +39,8 @@ IRowColumnDS::IRowColumnDS(int M, int N, int p_nz, bool p_value)
  */
 IRowColumnDS::~IRowColumnDS()
 {
-    delete[] indRow;
-    delete[] indCol;
+    delete[] row_ind;
+    delete[] col_ind;
     delete[] jpntr;
     delete[] ipntr;
     if(value)
@@ -51,17 +51,17 @@ IRowColumnDS::~IRowColumnDS()
 /*
  * Purpose:         Computes Compressed Column Storage(CCS) format of the sparse matrix. The CCS
  *          		format stores the columns of matrix A in three member arrays in IRowColumnDS
- *          		object: <id:jpntr>, <id:indRow> and <id:x>. Data member <id:x> is empty if
+ *          		object: <id:jpntr>, <id:row_ind> and <id:x>. Data member <id:x> is empty if
  *          		<id:value>, a boolean member variable evaluates to false.
  *
  * Pre-condition: 	Assumes that the matrix definition is stored in co-ordinate format in
- *          		<id:indRow> and <id:indCol> integer array. For every non-zero position in the
- *          		sparse matrix there is two entry: indRow[i] and indCol[i] holding the row, and
+ *          		<id:row_ind> and <id:col_ind> integer array. For every non-zero position in the
+ *          		sparse matrix there is two entry: row_ind[i] and col_ind[i] holding the row, and
  *          		column coordinate of the nonzero entry. If we <id:value> is true then x[i]
  *          		stores the corresponding nonzero item.
  *
  * Post-condition: 	Column-oriented definition of the sparse matrix is stored in the two array
- *          		<id:jpntr> and <id:indRow>. If value of the nonzero items are being stored ,
+ *          		<id:jpntr> and <id:row_ind>. If value of the nonzero items are being stored ,
  *          		then <id:x> is also organized in column oriented definition.
  *
  * Return values:   Returns true when the function is executed successfully, otherwise returns
@@ -82,29 +82,36 @@ bool IRowColumnDS::computeCCS()
         }
 
         // Store the number of nonzeroe entries in w[i] for each
-// column i
+        // column i
         //std::cout << "printing the value of nz: " << std::endl;
         //std::cout << nz << std::endl;
         for(int k = 1; k <= nz; k++)
         {
-            w[indCol[k]] = w[indCol[k]] + 1;
-
+            w[col_ind[k]] = w[col_ind[k]] + 1;
+            //cout<<"Blawaluppa at: "<<col_ind[k] << " is "<< w[col_ind[k]]<<endl;
         }
 
         // Compute jpntr such that jpntr[j] points to the beginning of
-        // row indices for column j in <id:indRow> integer array.
+        // row indices for column j in <id:row_ind> integer array.
         jpntr[1] = 1;
         for(int j = 1 ; j <= N; j++)
         {
             jpntr[j+1] = jpntr[j] + w[j];
             w[j] = jpntr[j];
+
         }
+
+        for(int j = 1 ; j <= N; j++)
+		{
+			cout<<" jpntr[j] "<<jpntr[j]<<endl;
+
+		}
 
         // Perform In Place Sort.
         int k = 1;
         do
         {
-            int j = indCol[k];
+            int j = col_ind[k];
             if (k >= jpntr[j])
             {
                 // Current element is already in right position. Examine the next element of the
@@ -116,11 +123,11 @@ bool IRowColumnDS::computeCCS()
                 // Current element is not in right position, place the element in position, and set
                 // the displaced entry as the current element.
                 int l = w[j]++;
-                int i = indRow[k];
-                indRow[k] = indRow[l];
-                indCol[k] = indCol[l];
-                indRow[l] = i;
-                indCol[l] = j;
+                int i = row_ind[k];
+                row_ind[k] = row_ind[l];
+                col_ind[k] = col_ind[l];
+                row_ind[l] = i;
+                col_ind[l] = j;
                 if(value) // If we are storing values in the IRowColumnDS.
                 {
                     double t = x[k];
@@ -154,12 +161,12 @@ int IRowColumnDS::max(int s, int t)
 
 /*
  * Purpose:         Removes duplicate entries from the column-oriented definition of the sparsity,
- *                  and compresses three class member <id:indRow>, <id:jpntr> and <id:x> array.
+ *                  and compresses three class member <id:row_ind>, <id:jpntr> and <id:x> array.
  *
  * Pre-condition: 	Assumes that the sparsity pattern is stored in column-oriented definition in
- *          		<id:jpntr>, <id:indRow> and <id:x> array by	calling computeCCS() method.
+ *          		<id:jpntr>, <id:row_ind> and <id:x> array by	calling computeCCS() method.
  *
- * Post-condition: 	Removes duplicate entry and reorganize <id:indRow>, <id:jpntr> and <id:x>
+ * Post-condition: 	Removes duplicate entry and reorganize <id:row_ind>, <id:jpntr> and <id:x>
  *                  array.
  *
  * Return values:   Returns number of unique nonzero items when the function is executed
@@ -182,7 +189,6 @@ int IRowColumnDS::compress()
         for (int i = 1; i <= M; i++)
         {
             tag[i] = 0;
-
         }
 
         int nnz = 1;
@@ -193,10 +199,10 @@ int IRowColumnDS::compress()
             k = nnz;
             for (int jp = jpntr[j]; jp < jpntr[j + 1] ; ++jp)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 if (tag[ir] != j)
                 {
-                    indRow[nnz] = ir;
+                    row_ind[nnz] = ir;
                     tag[ir] = j;
                     if(value)
                     {
@@ -224,16 +230,16 @@ int IRowColumnDS::compress()
 /*
  * Purpose:         Computes Compressed Row Storage(CCS) definition of the sparse matrix. The CRS
  *          		format stores the rows of matrix A in two member arrays in IRowColumnDS
- *          		object: <id:ipntr>, <id:indCol>. Value array <id:x> is not stored in row
+ *          		object: <id:ipntr>, <id:col_ind>. Value array <id:x> is not stored in row
  *          		oriented definition.
  *
  * Pre-condition: 	Assumes that the matrix definition is stored in CCS format in
- *          		<id:indRow> and <id:jpntr> integer array and duplicate entries has been
+ *          		<id:row_ind> and <id:jpntr> integer array and duplicate entries has been
  *          		removed by calling computeCCS() method and compress() method.
 
  *
  * Post-condition: 	Row-oriented definition of the sparse matrix is stored in the two array
- *          		<id:ipntr> and <id:indCol>.
+ *          		<id:ipntr> and <id:col_ind>.
  *
  * Return values:   Returns true when the function is executed successfully, otherwise returns
  *          		false.
@@ -250,12 +256,12 @@ bool IRowColumnDS::computeCRS()
      *     row-oriented definition of the sparsity pattern of a.
      *
      *     on input the column-oriented definition is specified by
-     *     the arrays indRow and jpntr. on output the row-oriented
-     *     definition is specified by the arrays indCol and ipntr.
+     *     the arrays row_ind and jpntr. on output the row-oriented
+     *     definition is specified by the arrays col_ind and ipntr.
      *
      *     the subroutine statement is
      *
-     *       subroutine setr(M,N,indRow,jpntr,indCol,ipntr,w)
+     *       subroutine setr(M,N,row_ind,jpntr,col_ind,ipntr,w)
      *
      *     where
      *
@@ -265,26 +271,26 @@ bool IRowColumnDS::computeCRS()
      *       N is a positive integer input variable set to the number
      *         of columns of a.
      *
-     *       indRow is an integer input array which contains the row
+     *       row_ind is an integer input array which contains the row
      *         indices for the non-zeroes in the matrix a.
      *
      *       jpntr is an integer input array of length N + 1 which
-     *         specifies the locations of the row indices in indRow.
+     *         specifies the locations of the row indices in row_ind.
      *         the row indices for column j are
      *
-     *               indRow[k], k = jpntr[j],...,jpntr[j+1]-1.
+     *               row_ind[k], k = jpntr[j],...,jpntr[j+1]-1.
      *
      *         note that jpntr[N+1]-1 is then the number of non-zero
      *         elements of the matrix a.
      *
-     *       indCol is an integer output array which contains the
+     *       col_ind is an integer output array which contains the
      *         column indices for the non-zeroes in the matrix a.
      *
      *       ipntr is an integer output array of length M + 1 which
-     *         specifies the locations of the column indices in indCol.
+     *         specifies the locations of the column indices in col_ind.
      *         the column indices for row i are
      *
-     *               indCol[k], k = ipntr[i],...,ipntr[i+1]-1.
+     *               col_ind[k], k = ipntr[i],...,ipntr[i+1]-1.
      *
      *         note that ipntr[1] is set to 1 and that ipntr[M+1]-1 is
      *         then the number of non-zero elements of the matrix a.
@@ -309,11 +315,11 @@ bool IRowColumnDS::computeCRS()
         // Store the number of nozero entries in w[i] for each row i.
         for (int jp = 1; jp <=  jpntr[N+1]-1 ;jp++  )
         {
-            w[indRow[jp]] = w[indRow[jp]] + 1;
+            w[row_ind[jp]] = w[row_ind[jp]] + 1;
         }
 
         // Compute ipntr such that ipntr[ir] points to the beginning of column indices for row ir in
-        // <id:indROw> integer array.
+        // <id:row_ind> integer array.
         ipntr[1] = 1;
         for (ir = 1; ir <=  M ;ir++  )
         {
@@ -321,13 +327,13 @@ bool IRowColumnDS::computeCRS()
             w[ir] = ipntr[ir];
         }
 
-        // Fill indCol traversing the row-oriented definition of the sparse Matrix A.
+        // Fill col_ind traversing the row-oriented definition of the sparse Matrix A.
         for (jcol = 1; jcol <=  N ;jcol++  )
         {
             for (jp = jpntr[jcol]; jp <=  jpntr[jcol+1]-1 ;jp++  )
             {
-                ir = indRow[jp];
-                indCol[w[ir]] = jcol;
+                ir = row_ind[jp];
+                col_ind[w[ir]] = jcol;
                 w[ir] = w[ir] + 1;
             }
         }
@@ -344,20 +350,20 @@ bool IRowColumnDS::computeCRS()
 
 void IRowColumnDS::setIndRowEntry(int index,int entry)
 {
-    *(indRow+index) = entry;
+    *(row_ind+index) = entry;
 }
 void IRowColumnDS::setIndColEntry(int index,int entry)
 {
-    *(indCol+index) = entry;
+    *(col_ind+index) = entry;
 }
 
 int IRowColumnDS::getIndRowEntry(int index) const
 {
-    return *(indRow + index);
+    return *(row_ind + index);
 }
 int IRowColumnDS::getIndColEntry(int index) const
 {
-    return *(indCol + index);
+    return *(col_ind + index);
 }
 
 int IRowColumnDS::getJpntrEntry(int index) const
@@ -473,9 +479,9 @@ int IRowColumnDS::min(int s, int t)
  * Pre-condition: 	None.
  *
  * Post-condition: 	An entry for nonzero location for a sparse matrix is inserted in the co-ordinate
- *          		storage defined by <id:indRow>, <id:indCol>, and <id:x>. For i-th invocation of
+ *          		storage defined by <id:row_ind>, <id:col_ind>, and <id:x>. For i-th invocation of
  *          		entry() method, the row and column for the nonzero item is stored in indRow[i],
- *          		and indCol[i], where x[i] holds the nonzero item. If member variable <id:value>
+ *          		and col_ind[i], where x[i] holds the nonzero item. If member variable <id:value>
  *          		is false, then the nozero items literal value is not inserted in <id:x> array.
  *
  * Return values:   void
@@ -497,7 +503,7 @@ void IRowColumnDS::entry(int row, int col, double value)
  * Pre-condition: 	None.
  *
  * Post-condition: 	An entry for nonzero location for a sparse matrix is inserted in the co-ordinate
- *          		storage defined by <id:indRow>, <id:indCol>, without inserting value in for
+ *          		storage defined by <id:row_ind>, <id:col_ind>, without inserting value in for
  *          		<id:x> array.
  *
  * Return values:   void

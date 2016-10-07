@@ -78,10 +78,10 @@ bool Matrix::computedegree()
             w[jcol] = N;
             for(int jp = jpntr[jcol]; jp <= jpntr[jcol+1]-1 ;jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 for (int ip = ipntr[ir]; ip <=  ipntr[ir+1]-1 ;ip++  )
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
                     if (w[ic] < jcol)
                     {
                         w[ic] = jcol;
@@ -164,10 +164,10 @@ int Matrix::greedycolor(int *order, int *color)
             // Find all columns adjacent to column jcol.
             for (jp = jpntr[jcol]; jp <  jpntr[jcol+1] ;jp++  )
             {
-                ir = indRow[jp];
+                ir = row_ind[jp];
                 for (ip = ipntr[ir]; ip <  ipntr[ir+1] ;ip++  )
                 {
-                    ic = indCol[ip];
+                    ic = col_ind[ip];
                     // Mark the color number with seq number
                     w[color[ic]] = seq;
                 }
@@ -283,12 +283,12 @@ bool Matrix::slo(int *list)
 
             for(jp = jpntr[jcol]; jp <= jpntr[jcol+1] -1;jp++)
             {
-                ir = indRow[jp] ;
+                ir = row_ind[jp] ;
 
                 // For each row ir,determine all nonzero entries (ir,ic)
                 for(ip = ipntr[ir] ; ip <= ipntr[ir+1] - 1; ip++)
                 {
-                    ic = indCol[ip];
+                    ic = col_ind[ip];
                     /* Array tag marks columns which are adjacent to
                      * column jcol
                      */
@@ -466,10 +466,10 @@ bool Matrix::ido(int *order )
             // Find all columns adjacent to jcol
             for(int jp = jpntr[jcol] ; jp <= jpntr[jcol+1] -1; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 for(int ip = ipntr[ir];ip <=  ipntr[ir+1]-1; ip++)
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
 
                     if (tag[ic] < numord)
                     {
@@ -730,7 +730,7 @@ int Matrix::rlf(int *color)
             // while updating the u_degree/priority for each of the vertices.
             for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 blackList[ir] = q;
             }
 
@@ -738,11 +738,11 @@ int Matrix::rlf(int *color)
             // Find all adjacent columns of jcol, and move them to set U.
             for ( int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
 
                 for ( int ip = ipntr[ir]; ip < ipntr[ir+1]; ip++)
                 {
-                    int ic= indCol[ip];
+                    int ic= col_ind[ip];
 
                     if(tag[ic] < numord) // if this adjacent column is not
                                          // processed for jcol.
@@ -760,7 +760,7 @@ int Matrix::rlf(int *color)
                             u_queue.remove(ic);
 
                             // Update the U_degrees of the adjacent vertices.
-                            u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,indRow,ipntr,indCol,inU,
+                            u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,row_ind,ipntr,col_ind,inU,
                                                                         tag,u_tag,u_queue,blackList,q);
 
                         }
@@ -1084,11 +1084,11 @@ int Matrix::sdo(int *color)
 
             for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
 
                 for( int ip = ipntr[ir]; ip < ipntr[ir + 1] ; ip++)
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
                     seqTag[color[ic]] = jcol;
                 }
             }
@@ -1123,11 +1123,11 @@ int Matrix::sdo(int *color)
 
             for (int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
 
                 for( int ip = ipntr[ir] ; ip < ipntr[ir+1] ; ip++)
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
 
                     if(tag[ic] < numord)
                     {
@@ -1138,10 +1138,10 @@ int Matrix::sdo(int *color)
                         // search the neighborhood of ic
                         for (int x_jp = jpntr[ic]; x_jp < jpntr[ic+1] ; x_jp++)
                         {
-                            int x_ir = indRow[x_jp];
+                            int x_ir = row_ind[x_jp];
                             for (int x_ip = ipntr[ir]; x_ip < ipntr[ir+1]; x_ip++)
                             {
-                                int x_ic = indCol[x_ip];
+                                int x_ic = col_ind[x_ip];
                                 if(color[x_ic] == newColor)
                                 {
                                     isNewColor = false;
@@ -1193,8 +1193,8 @@ int Matrix::sdo(int *color)
 }
 /* sdo() ENDS*/
 
-int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int *indRow,
-                                     int *ipntr,int *indCol, bool * inU, int *tag, int *u_tag,
+int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int *row_ind,
+                                     int *ipntr,int *col_ind, bool * inU, int *tag, int *u_tag,
                                      int *u_list, int *head, int *next, int *previous,int *list, int *blackList,const int q)
 {
     // Update the degrees of the adjacent vertices.
@@ -1206,12 +1206,12 @@ int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int 
 
     for( int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
     {
-        ir = indRow[jp];
+        ir = row_ind[jp];
         if(blackList[ir] == q)
             continue;
         for(int ip = ipntr[ir]; ip < ipntr[ir+1] ; ip++)
         {
-            ic = indCol[ip];
+            ic = col_ind[ip];
 
             if(inU[ic] == false && tag[ic] < n && u_tag[ic] != jcol)
             {

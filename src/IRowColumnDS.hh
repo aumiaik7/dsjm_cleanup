@@ -77,8 +77,8 @@ protected:
     // This one is going to be used after the compression
     // or the deletion of the duplicate values happen.
 
-    int *indRow;
-    int *indCol;
+    int *row_ind;
+    int *col_ind;
     int *jpntr;
     int *ipntr;
     bool value;

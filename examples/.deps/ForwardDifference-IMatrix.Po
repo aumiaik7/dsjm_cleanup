@@ -104,6 +104,7 @@ ForwardDifference-IMatrix.o: ../src/IMatrix.cc ../src/IMatrix.hh \
  /usr/include/bits/huge_valf.h /usr/include/bits/huge_vall.h \
  /usr/include/bits/inf.h /usr/include/bits/nan.h \
  /usr/include/bits/mathdef.h /usr/include/bits/mathcalls.h \
+ /usr/include/bits/mathinline.h \
  /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cmath.tcc
 
 ../src/IMatrix.hh:
@@ -365,5 +366,7 @@ ForwardDifference-IMatrix.o: ../src/IMatrix.cc ../src/IMatrix.hh \
 /usr/include/bits/mathdef.h:
 
 /usr/include/bits/mathcalls.h:
+
+/usr/include/bits/mathinline.h:
 
 /usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/cmath.tcc:
