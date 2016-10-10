@@ -337,6 +337,7 @@ bool IRowColumnDS::computeCRS()
                 w[ir] = w[ir] + 1;
             }
         }
+
     }
     catch(std::bad_alloc)
     {
