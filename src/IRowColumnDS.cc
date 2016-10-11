@@ -70,15 +70,15 @@ IRowColumnDS::~IRowColumnDS()
  */
 bool IRowColumnDS::computeCCS()
 {
-    int *w;
+    int *tag;
     try
     {
-        w = new int[N+1]; //  Temporary working array of size N+1.
+        tag = new int[N+1]; //  Temporary working array of size N+1.
 
         // Initialize the working array <id:w>
         for(int j=1; j <=N ; j++)
         {
-            w[j] = 0;
+            tag[j] = 0;
         }
 
         // Store the number of nonzeroe entries in w[i] for each
@@ -87,8 +87,7 @@ bool IRowColumnDS::computeCCS()
         //std::cout << nz << std::endl;
         for(int k = 1; k <= nz; k++)
         {
-            w[col_ind[k]] = w[col_ind[k]] + 1;
-            //cout<<"Blawaluppa at: "<<col_ind[k] << " is "<< w[col_ind[k]]<<endl;
+            tag[col_ind[k]] = tag[col_ind[k]] + 1;
         }
 
         // Compute jpntr such that jpntr[j] points to the beginning of
@@ -96,16 +95,10 @@ bool IRowColumnDS::computeCCS()
         jpntr[1] = 1;
         for(int j = 1 ; j <= N; j++)
         {
-            jpntr[j+1] = jpntr[j] + w[j];
-            w[j] = jpntr[j];
+            jpntr[j+1] = jpntr[j] + tag[j];
+            tag[j] = jpntr[j];
 
         }
-
-        for(int j = 1 ; j <= N; j++)
-		{
-			cout<<" jpntr[j] "<<jpntr[j]<<endl;
-
-		}
 
         // Perform In Place Sort.
         int k = 1;
@@ -116,13 +109,13 @@ bool IRowColumnDS::computeCCS()
             {
                 // Current element is already in right position. Examine the next element of the
                 // first un-sorted element in the j-th group.
-                k = max(k+1,w[j]);
+                k = max(k+1,tag[j]);
             }
             else
             {
                 // Current element is not in right position, place the element in position, and set
                 // the displaced entry as the current element.
-                int l = w[j]++;
+                int l = tag[j]++;
                 int i = row_ind[k];
                 row_ind[k] = row_ind[l];
                 col_ind[k] = col_ind[l];
@@ -141,10 +134,10 @@ bool IRowColumnDS::computeCCS()
     catch(std::bad_alloc)
     {
         std::cerr << "Memory Exhausted " << std::endl;
-        delete[] w;
+        delete[] tag;
         return false;
     }
-    delete[] w;
+    delete[] tag;
     return true;
 }
 
@@ -261,7 +254,7 @@ bool IRowColumnDS::computeCRS()
      *
      *     the subroutine statement is
      *
-     *       subroutine setr(M,N,row_ind,jpntr,col_ind,ipntr,w)
+     *       subroutine setr(M,N,row_ind,jpntr,col_ind,ipntr,tag)
      *
      *     where
      *
@@ -301,21 +294,21 @@ bool IRowColumnDS::computeCRS()
      *     thomas f. coleman, burton s. garbow, jorge j. more'
      *
      **/
-    int *w;
+    int *tag;
     try
     {
-        w = new int[M+1]; // Temporary working array of size N+1.
+        tag = new int[M+1]; // Temporary working array of size N+1.
         int ir,jcol,jp;
 
         // Initialize the working array <id:w>
         for (int ir = 1; ir <=  M ;ir++  )
         {
-            w[ir] = 0;
+            tag[ir] = 0;
         }
         // Store the number of nozero entries in w[i] for each row i.
         for (int jp = 1; jp <=  jpntr[N+1]-1 ;jp++  )
         {
-            w[row_ind[jp]] = w[row_ind[jp]] + 1;
+            tag[row_ind[jp]] = tag[row_ind[jp]] + 1;
         }
 
         // Compute ipntr such that ipntr[ir] points to the beginning of column indices for row ir in
@@ -323,8 +316,8 @@ bool IRowColumnDS::computeCRS()
         ipntr[1] = 1;
         for (ir = 1; ir <=  M ;ir++  )
         {
-            ipntr[ir+1] = ipntr[ir] + w[ir];
-            w[ir] = ipntr[ir];
+            ipntr[ir+1] = ipntr[ir] + tag[ir];
+            tag[ir] = ipntr[ir];
         }
 
         // Fill col_ind traversing the row-oriented definition of the sparse Matrix A.
@@ -333,18 +326,18 @@ bool IRowColumnDS::computeCRS()
             for (jp = jpntr[jcol]; jp <=  jpntr[jcol+1]-1 ;jp++  )
             {
                 ir = row_ind[jp];
-                col_ind[w[ir]] = jcol;
-                w[ir] = w[ir] + 1;
+                col_ind[tag[ir]] = jcol;
+                tag[ir] = tag[ir] + 1;
             }
         }
 
     }
     catch(std::bad_alloc)
     {
-        if(w) delete[] w;
+        if(tag) delete[] tag;
         return false;
     }
-    delete[] w;
+    delete[] tag;
     return true;
 }
 

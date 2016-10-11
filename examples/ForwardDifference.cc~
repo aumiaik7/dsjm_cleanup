@@ -7,7 +7,6 @@
 #include <fstream>
 #include "Timer.h"
 #include "CLI.h"
-#include <getopt.h>
 
 // It sets p[i] equal to the sum of c[1] through c[i-1]+1
 // On output c[1..n] is overwritten with p[1..n]

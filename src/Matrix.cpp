@@ -55,10 +55,10 @@ Matrix::~Matrix()
 bool Matrix::computedegree()
 {
     maxdeg = -1;
-    int *w;
+    int *tag;
     try
     {
-        w = new int[N+1]; // Temporary working array of size N+1. If w[jcol] =
+        tag = new int[N+1]; // Temporary working array of size N+1. If w[jcol] =
                           // N, then the degree of column jcol has been
                           // computed.
 
@@ -67,7 +67,7 @@ bool Matrix::computedegree()
         for(int jp = 1; jp <= N; jp++)
         {
             ndeg[jp] = 0;
-            w[jp] = 0;
+            tag[jp] = 0;
         }
 
         // At each step, choose a column <id:jcol> and visit all
@@ -75,16 +75,16 @@ bool Matrix::computedegree()
         // G(A).
         for(int jcol = 2; jcol <= N; jcol++)
         {
-            w[jcol] = N;
+            tag[jcol] = N;
             for(int jp = jpntr[jcol]; jp <= jpntr[jcol+1]-1 ;jp++)
             {
                 int ir = row_ind[jp];
                 for (int ip = ipntr[ir]; ip <=  ipntr[ir+1]-1 ;ip++  )
                 {
                     int ic = col_ind[ip];
-                    if (w[ic] < jcol)
+                    if (tag[ic] < jcol)
                     {
-                        w[ic] = jcol;
+                        tag[ic] = jcol;
                         ndeg[ic] = ndeg[ic] + 1;
                         ndeg[jcol] = ndeg[jcol] + 1;
                         maxdeg = std::max(ndeg[jcol],maxdeg);
@@ -96,12 +96,12 @@ bool Matrix::computedegree()
     }
     catch(std::bad_alloc)
     {
-        delete[] w;
+        delete[] tag;
         return false;
     }
     if(maxdeg == -1)
         maxdeg = 0;
-    delete[] w;
+    delete[] tag;
     return true;
 }
 
