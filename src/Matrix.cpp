@@ -87,14 +87,14 @@ bool Matrix::computedegree()
                         tag[ic] = jcol;
                         ndeg[ic] = ndeg[ic] + 1;
                         ndeg[jcol] = ndeg[jcol] + 1;
-                        maxdeg = std::max(ndeg[jcol],maxdeg);
-                        maxdeg = std::max(ndeg[ic], maxdeg);
+                        maxdeg = max(ndeg[jcol],maxdeg);
+                        maxdeg = max(ndeg[ic], maxdeg);
                     }
                 }
             }
         }
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
         delete[] tag;
         return false;
@@ -187,7 +187,7 @@ int Matrix::greedycolor(int *order, int *color)
         numberOfColors = maxgrp;
         return maxgrp;
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
         delete[] w;
         return 0;
@@ -225,7 +225,7 @@ bool Matrix::slo(int *list)
         return false;
 
 
-    std::vector<int> tag;
+    vector<int> tag;
 
     try
     {
@@ -238,7 +238,7 @@ bool Matrix::slo(int *list)
             priority_queue.insert(jp,ndeg[jp]); // assume that ndeg has already been
             // computed (by computeDegree() method)
             tag[jp] = N;
-            mindeg = std::min(mindeg,ndeg[jp]);
+            mindeg = min(mindeg,ndeg[jp]);
         }
 
         int maximalClique = 0; // Reset maximalClique. It will be set in the while loop
@@ -301,18 +301,18 @@ bool Matrix::slo(int *list)
                         // Update the degree in the priority queue.
                         priority_queue.decrease(ic);
                         numdeg = priority_queue.get(ic).priority;
-                        mindeg = std::min(mindeg,numdeg);
+                        mindeg = min(mindeg,numdeg);
 
                     }
                 }
             }
         }
     }
-    catch(std::bad_alloc) // for std::vector.reserve()
+    catch(bad_alloc) // for vector.reserve()
     {
         return false;
     }
-    catch(length_error) // for std::vector.reserve()
+    catch(length_error) // for vector.reserve()
     {
         return false;
     }
@@ -504,9 +504,9 @@ bool Matrix::ido(int *order )
         }
 
     }
-    catch (std::bad_alloc)
+    catch (bad_alloc)
     {
-        std::cerr << "Memory Exhausted in Matrix::IDO\n";
+        cerr << "Memory Exhausted in Matrix::IDO\n";
 
         if(head) delete[] head;
         if(previous) delete[] previous;
@@ -794,9 +794,9 @@ int Matrix::rlf(int *color)
         }
     }
 
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
-        std::cerr << "ERROR: Memory Exhausted" << std::endl;
+        cerr << "ERROR: Memory Exhausted" << endl;
 
         if(tag) delete[] tag;
 
@@ -906,7 +906,7 @@ bool Matrix::lfo(int *order)
             }
         }
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
         delete[] next ;
         delete[] head;
@@ -1170,9 +1170,9 @@ int Matrix::sdo(int *color)
 
         }
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
-        std::cerr << "ERROR: Memory Exhausted " << std::endl;
+        cerr << "ERROR: Memory Exhausted " << endl;
 
         if(head) delete[] head;
         if(previous) delete[] previous;
