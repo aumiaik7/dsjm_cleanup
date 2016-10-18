@@ -277,7 +277,7 @@ bool Matrix::slo(int *list)
 
             tag[jcol] = 0;
 
-            //
+
             // Determine all nonzero entries (ir,jcol)
 
 
