@@ -47,7 +47,6 @@ public:
 
     void insert(Index vertex_id, Priority priority)
     {
-        // std::cout << "p_queue.insert("<< vertex_id << "," << priority<< ");"<< std::endl;
         size++;
         optimum = cmp_fun.opt(priority,optimum);
 
@@ -78,11 +77,7 @@ public:
 
             optimum = cmp_fun.next_op(optimum);
             assert(optimum > _invalid);
-            // std::cout << "Optimum Decreasing " << optimum << std::endl;
-            // std::cout << "optimum " << optimum << std::endl;
         }while(1);
-        //std::cout << "jcol " << jcol << std::endl ;
-        // std::cout << "Optimum " << optimum << std::endl;
         assert(v_priority[jcol] == optimum);
         return Item( jcol, v_priority[jcol] );
     }
