@@ -384,8 +384,6 @@ bool Matrix::ido(int *order )
         MatrixUtility::indexsort(N,N-1,ndeg,-1,tag/* index*/ ,previous/* last
                                                                        */ ,next/* next
                                                                                 */ );
-
-
         // Initialize the doubly linked list, and <id:tag> and <id:order> integer array.
         for(int jp =N ; jp >= 1 ; jp--)
         {
@@ -407,7 +405,7 @@ bool Matrix::ido(int *order )
         }
         maxLast = maxLast/N;
 
-        int maximalClique = 0;
+//        int maximalClique = 0;
 
         int maxinc = 0;
         int ncomp;
@@ -416,11 +414,11 @@ bool Matrix::ido(int *order )
         {
             // update the size of the largest clique
             // found during the ordering.
-            if (maxinc == 0)
+        	/* if (maxinc == 0)
                 ncomp = 0;
             ncomp = ncomp + 1;
             if (maxinc + 1 == ncomp)
-                maximalClique = max(maximalClique,ncomp);
+                maximalClique = max(maximalClique,ncomp);*/
 
 
             // choose a column jcol of maximal incidence degree
@@ -434,11 +432,11 @@ bool Matrix::ido(int *order )
                     maxinc = maxinc - 1;
                 }while(1);
 
-                // We search a distance of maxLast length to find the colum with
+
+                // We search a distance of maxLast length to find the column with
                 // maximal degree in the original graph.
                 for(int numlst = 1,  numwgt = -1; numlst <= maxLast; numlst++)
                 {
-
                     if (ndeg[jp] > numwgt)
                     {
                         numwgt = ndeg[jp];

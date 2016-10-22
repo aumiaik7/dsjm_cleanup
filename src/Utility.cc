@@ -206,14 +206,12 @@ void MatrixUtility::indexsort(int n,int nmax,int *num,int mode,int *index,int *l
     for(int j = jl; j*jinc <= ju*jinc; j = j + jinc)
     {
         k = last[j];
-    NUMSRT_thirty_mode_1:
-        if (k == 0)
-            continue;
-        index[i] = k;
-        i = i + 1;
-        k = next[k];
-        goto NUMSRT_thirty_mode_1;
-
+        while(k!=0)
+        {
+        	index[i] = k;
+        	i = i + 1;
+        	k = next[k];
+        }
     }
 
     return;
