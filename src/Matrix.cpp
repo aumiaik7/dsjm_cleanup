@@ -405,7 +405,7 @@ bool Matrix::ido(int *order )
         }
         maxLast = maxLast/N;
 
-//        int maximalClique = 0;
+        int maximalClique = 0;
 
         int maxinc = 0;
         int ncomp;
@@ -414,11 +414,11 @@ bool Matrix::ido(int *order )
         {
             // update the size of the largest clique
             // found during the ordering.
-        	/* if (maxinc == 0)
+        	if (maxinc == 0)
                 ncomp = 0;
             ncomp = ncomp + 1;
             if (maxinc + 1 == ncomp)
-                maximalClique = max(maximalClique,ncomp);*/
+                maximalClique = max(maximalClique,ncomp);
 
 
             // choose a column jcol of maximal incidence degree
