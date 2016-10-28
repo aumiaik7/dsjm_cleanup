@@ -1062,7 +1062,7 @@ int Matrix::sdo(int *color)
                 maxsat--;
             }
 
-            // We search a distance of maxLast length to find the colum with
+            // We search a distance of maxLast length to find the column with
             // maximal degree in the original graph.
             for(int numlst = 1,numwgt = -1;  numlst <= maxlst; numlst++)
             {
@@ -1095,11 +1095,16 @@ int Matrix::sdo(int *color)
             for (newColor = 1; newColor <= maxgrp; newColor++)
             {
                 if(seqTag[newColor] != jcol)
-                    goto SDO_L50;
+                {
+                	break;
+                	//goto SDO_L50;
+                }
             }
-            maxgrp = maxgrp + 1;
+           //changed this to remove the goto statement
+           if(newColor>maxgrp)
+        	   maxgrp = maxgrp + 1;
 
-        SDO_L50:
+        //SDO_L50:
             color[jcol] = newColor;
 
             satDeg[jcol] = numord;
@@ -1143,13 +1148,14 @@ int Matrix::sdo(int *color)
                                 if(color[x_ic] == newColor)
                                 {
                                     isNewColor = false;
-                                    goto SDO_ISNEWCOLOR;
+                                    //goto SDO_ISNEWCOLOR;
+                                    break;
                                 }
                             }
                         }
 
                         // ========================================
-                    SDO_ISNEWCOLOR:
+                    //SDO_ISNEWCOLOR:
                         if(isNewColor)
                         {
                             // update the pointers to the current saturation
