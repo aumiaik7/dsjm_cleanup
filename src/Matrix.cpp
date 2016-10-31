@@ -141,18 +141,18 @@ int Matrix::greedycolor(int *order, int *color)
     if(order == NULL || color == NULL)
         return 0;
 
-    int *w;                     // working array of size n+1. It is used to mark
+    int *tag;                     // working array of size n+1. It is used to mark
                                 // the colors already used for adjacent columns
     int maxgrp = 0;
     int ic,ip,ir,j,jcol,jp;
     try
     {
-        w = new int[N+1];       // working array of size n+1
+        tag = new int[N+1];       // working array of size n+1
 
         for (jp = 1; jp <=  N ;jp++  ) // Initialization of the arrays.
         {
             color[jp] = N;
-            w[jp] = 0;
+            tag[jp] = 0;
         }
 
         for (int seq = 1; seq <=  N ;seq++  ) // Colors are assigned to each column taken
@@ -169,27 +169,31 @@ int Matrix::greedycolor(int *order, int *color)
                 {
                     ic = col_ind[ip];
                     // Mark the color number with seq number
-                    w[color[ic]] = seq;
+                    tag[color[ic]] = seq;
                 }
             }
 
             // Assign the smallest un-marked color number to jcol.
             for (jp = 1; jp <=  maxgrp ;jp++  )
             {
-                if (w[jp] != seq)
-                    goto SEQ_L50;
+                if (tag[jp] != seq)
+                {
+                	break;
+                	//goto SEQ_L50;
+                }
             }
-            maxgrp = maxgrp + 1;
-        SEQ_L50:
+            if(jp>maxgrp)
+            	maxgrp = maxgrp + 1;
+        //SEQ_L50:
             color[jcol] = jp;
         }
-        delete[] w;
+        delete[] tag;
         numberOfColors = maxgrp;
         return maxgrp;
     }
     catch(bad_alloc)
     {
-        delete[] w;
+        delete[] tag;
         return 0;
     }
 }

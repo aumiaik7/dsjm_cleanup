@@ -4,6 +4,8 @@
 #include "Utility.h"
 #include "OrderingMethod.hh"
 
+using namespace std;
+
 class RLF
 {
 public:
@@ -356,7 +358,7 @@ public:
                 {
                     u_tag[ic] = jcol;
                     u_queue.increase(ic);
-                    maxdeg = std::max(u_queue.get(ic).priority, maxdeg);
+                    maxdeg = max(u_queue.get(ic).priority, maxdeg);
 
                 }
             }
