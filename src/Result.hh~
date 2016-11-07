@@ -36,7 +36,7 @@ public:
 
     void printInfo()
     {
-        /*cout << "- " << endl;
+        cout << "- " << endl;
         cout << "    commandLine: " << configuration->commandLine << endl;
         cout << "    inputFile: " << inputFile << endl;
         if(is_Cseg)
@@ -51,9 +51,9 @@ public:
             cout << "    segmented: " << "no" << endl; ;
 
         cout << "    method: " << CLI::method_to_string(method) << endl;	
-*/
+
 	//for testing only 
-	cout<<inputFile<<","<<CLI::method_to_string(method)<<",";
+	//cout<<inputFile<<","<<CLI::method_to_string(method)<<",";
     }
 
     void printMatrixInfo()
