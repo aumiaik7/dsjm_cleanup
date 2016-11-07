@@ -91,7 +91,7 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
     {
         if (configuration->oMethod == CLI::SLO )
         {
-            // timer.Start();
+            timer.Start();
             int *list;
             list = new int[configuration->N+1];
             ngrp = new int[configuration->N+1];
@@ -110,7 +110,7 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
         }
         else if( configuration->oMethod == CLI::IDO )
         {
-            // timer.Start();
+             timer.Start();
             int *list = new int[configuration->N+1];
             ngrp = new int[configuration->N+1];
             success = matrix->ido(list);
@@ -127,7 +127,7 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
         }
         else if ( configuration->oMethod == CLI::LFO)
         {
-            // timer.Start();
+            timer.Start();
             int *list = new int[configuration->N+1];
             ngrp = new int[configuration->N+1];
             success = matrix->lfo(list);
@@ -145,7 +145,7 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
         }
         else if ( configuration->oMethod == CLI::RLF)
         {
-            // timer.Start();
+            timer.Start();
             ngrp = new int[configuration->N+1];
             maxgrp =  matrix->rlf(ngrp);
             timer.Stop();
@@ -159,6 +159,7 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
                 cout << "DSatur method has not been implemented for CSegMatrix Yet!" << endl;
                 exit(1);
             }*/
+	    timer.Start();
             ngrp = new int[configuration->N+1];
             Matrix *nmatrix = dynamic_cast<Matrix*>(matrix);
             maxgrp = nmatrix->sdo(ngrp);
@@ -420,7 +421,7 @@ int run(Configuration *configuration)
         readData(configuration,f,matrix);
 
 
-        timer.Start();
+        //timer.Start();
         matrix->computeCCS();
 
 

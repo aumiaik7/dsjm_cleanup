@@ -13,16 +13,11 @@
 
 #include "CLI.h"
 #include "gcolor.hh"
-#include "CSegMatrix.hh"
 #include "mmio.h"
 #include "Matrix.hh"
 #include "Result.hh"
-#include "NNZTag.hh"
 
 
-#include "PartitionLoader.hh"
-#include "SimplePartitionedMatrix.hh"
-#include "ProfitPartitionMatrix.hh"
 
 #define CLK_TCK 100
 #define MAXLINE 100
@@ -159,11 +154,11 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
         }
         else if ( configuration->oMethod == CLI::SDO)
         {
-            if(configuration->is_cseg )
+            /*if(configuration->is_cseg )
             {
                 cout << "DSatur method has not been implemented for CSegMatrix Yet!" << endl;
                 exit(1);
-            }
+            }*/
             ngrp = new int[configuration->N+1];
             Matrix *nmatrix = dynamic_cast<Matrix*>(matrix);
             maxgrp = nmatrix->sdo(ngrp);
@@ -173,258 +168,10 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
 
             coloring_time = timer.GetWallTime();
         }
-        else if ( configuration->oMethod == CLI::PROFIT)
-        {
-            if(configuration->is_cseg )
-            {
-                cout << "Profit Function is not defined in CSegMatrix, though it is a CSegMatrix Function" << endl;
-                exit(1);
-            }
-
-            ProfitPartitionMatrix *nmatrix = dynamic_cast<ProfitPartitionMatrix*>(matrix);
-            NNZTag* nnzTag = new NNZTag(configuration->M,configuration->N);
-            maxgrp = nmatrix->cseg_profit(nnzTag);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-
-            if(configuration->verify)
-            {
-                nmatrix->extend();
-            }
-        }
-        else if ( configuration->oMethod == CLI::PROFIT_RLF)
-        {
-            if(configuration->is_cseg )
-            {
-                cout << "Profit RLF Function is not defined in CSegMatrix, though it is a CSegMatrix Function" << endl;
-                exit(1);
-            }
-            ngrp = new int[configuration->N+1];
-            Matrix *nmatrix = dynamic_cast<Matrix*>(matrix);
-            maxgrp = nmatrix->cseg_rlf_profit(ngrp);
-            timer.Stop();
-
-
-            coloring_time = timer.GetWallTime();
-
-        }
-        else if ( configuration->oMethod == CLI::RLF_SLO)
-        {
-            if(configuration->is_cseg)
-            {
-                std::cout << "RLF_SLO function is not defined in CSegMatrix yet!" << std::endl;
-            }
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*>(matrix);
-            int *list = new int[configuration->N+1];
-            _matrix->rlf_slo(ngrp);
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::SLO_RLF)
-        {
-            if(configuration->is_cseg)
-            {
-                std::cout << "SLO_RLF function is not defined in CSegMatrix yet!" << std::endl;
-            }
-            int *list = new int[configuration->N+1];
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*>(matrix);
-            _matrix->slo_rlf(ngrp);
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::RLF_IDO)
-        {
-            if(configuration->is_cseg)
-            {
-                std::cout << "RLF_IDO function is not defined in CSegMatrix yet!" << std::endl;
-            }
-
-            int *list = new int[configuration->N+1];
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*> (matrix);
-            _matrix->rlf_ido(ngrp);
-
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::IDO_RLF)
-        {
-            if(configuration->is_cseg)
-            {
-                std::cout << "IDO_RLF function is not defined in CSegMatrix yet!" << std::endl;
-            }
-            int *list = new int[configuration->N+1];
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*> (matrix);
-            _matrix->ido_rlf(list);
-
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::RLF_LFO)
-        {
-            if(configuration->is_cseg)
-            {
-                std::cout << "RLF_LFO function is not defined in CSegMatrix yet!" << std::endl;
-            }
-
-            int *list = new int[configuration->N+1];
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*> (matrix);
-            _matrix->rlf_lfo(list);
-
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::LFO_RLF)
-        {
-            if(configuration->is_cseg)
-            {
-                std::cout << "LFO_RLF function is not defined in CSegMatrix yet!" << std::endl;
-            }
-
-            int *list = new int[configuration->N+1];
-            ngrp = new int[configuration->N+1];
-            Matrix *_matrix = dynamic_cast<Matrix*> (matrix);
-            _matrix->lfo_rlf(list);
-
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = _matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-        }
         else
         {
             cerr << "Unknown Method for Ordering" << endl;
             exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        if (configuration->oMethod == CLI::SLO )
-        {
-            // timer.Start();
-            CSegMatrix* _matrix = dynamic_cast<CSegMatrix*>(matrix);
-            int *list;
-            list = new int[_matrix->getNumberOfSegments() + 1];
-            ngrp = new int[_matrix->getNumberOfSegments() + 1];
-            success = matrix->slo(list);
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-
-        }
-        else if( configuration->oMethod == CLI::IDO )
-        {
-            // timer.Start();
-            CSegMatrix* _matrix = dynamic_cast<CSegMatrix*>(matrix);
-            int *list;
-            list = new int[_matrix->getNumberOfSegments() + 1];
-            ngrp = new int[_matrix->getNumberOfSegments() + 1];
-
-            success = matrix->ido(list);
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::LFO)
-        {
-            // timer.Start();
-            CSegMatrix* _matrix = dynamic_cast<CSegMatrix*>(matrix);
-            int *list;
-            list = new int[_matrix->getNumberOfSegments() + 1];
-            ngrp = new int[_matrix->getNumberOfSegments() + 1];
-            success = matrix->lfo(list);
-            timer.Stop();
-
-            ordering_time = timer.GetWallTime();
-
-            timer.Start();
-            maxgrp = matrix->greedycolor(list,ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-
-            delete[] list;
-        }
-        else if ( configuration->oMethod == CLI::RLF)
-        {
-            // timer.Start();
-            CSegMatrix* _matrix = dynamic_cast<CSegMatrix*>(matrix);
-            ngrp = new int[_matrix->getNumberOfSegments() + 1];
-            maxgrp =  matrix->rlf(ngrp);
-            timer.Stop();
-
-            coloring_time = timer.GetWallTime();
-        }
-        else
-        {
-            cout << "Not Implemented for Column Segmented Matrix" << endl;
-            exit(1);// TODO:
         }
     }
     return RunningTimeInfo(maxgrp, ordering_time, coloring_time, ngrp);
@@ -603,15 +350,11 @@ int run(Configuration *configuration)
      *
      */
 
-
     FILE *pf;
-    PartitionLoader *partitionLoader;
     char line[MAXLINE+1];
 
     struct rusage runtime;
     int t1, t2,t3,t4;
-
-
 
 
     /**
@@ -659,43 +402,11 @@ int run(Configuration *configuration)
     IMatrix *matrix = NULL;
     try
     {
-        if(configuration->is_cseg == true)
-        {
-            partitionLoader = new PartitionLoader(configuration->M,configuration->N);
-            if(configuration->is_load_each_row_as_partition)
-            {
-                partitionLoader->loadEachRowAsPartition();
-            }
-            else if(canReadPartitionFile(configuration))
-            {
-                result.partitionFile = configuration->partitionFile;
-                partitionLoader->loadFile(configuration->partitionFile);
-            }
-            else
-            {
-                cerr << configuration->partitionFile << " cannot be found " << endl;
-                exit(EXIT_FAILURE);
-            }
 
-            CSegMatrix *_matrix = new CSegMatrix(configuration->M,configuration->N,configuration->NZ,false, partitionLoader);
-            matrix = _matrix;
+    	Matrix* _matrix = new Matrix(configuration->M,configuration->N,configuration->NZ, false);
+		matrix = _matrix;
+		matrix->setVerify(configuration->verify);
 
-            matrix->setVerify(configuration->verify);
-        }
-        else if (configuration->oMethod == CLI::PROFIT)
-        {
-            partitionLoader = new PartitionLoader(configuration->M,configuration->N);
-            partitionLoader->loadEachRowAsPartition();
-            ProfitPartitionMatrix* _matrix = new ProfitPartitionMatrix(configuration->M,configuration->N,configuration->NZ,false, partitionLoader);
-            matrix = _matrix;
-            _matrix->setVerify(configuration->verify);
-        }
-        else
-        {
-            Matrix* _matrix = new Matrix(configuration->M,configuration->N,configuration->NZ, false);
-            matrix = _matrix;
-            matrix->setVerify(configuration->verify);
-        }
         /** Time Related Variables -- CPack */
         double ordering_time = -1;
         double coloring_time = -1;
@@ -733,21 +444,6 @@ int run(Configuration *configuration)
             return 0;
         }
 
-
-
-        if(configuration->is_cseg == true)
-        {
-            CSegMatrix* nmatrix = dynamic_cast<CSegMatrix*>(matrix);
-            nmatrix->createMapForNNZSegments();
-        }
-        else if( configuration->oMethod == CLI::PROFIT && configuration->verify == true)
-        {
-            ProfitPartitionMatrix* nmatrix = dynamic_cast<ProfitPartitionMatrix*> (matrix);
-            // TODO: This conditional operation is compromising the
-            // validity of the validation/verifiction's integrity.
-            nmatrix->createMapForNNZSegments();
-        }
-
         matrix->computedegree();
         // maxgrp, coloring_time, ordering_time, kind of a tuple.
         int maxgrp;
@@ -770,25 +466,8 @@ int run(Configuration *configuration)
         if(configuration->verify)
         {
             writeGraphDescription(configuration,matrix);
-            if(configuration->is_cseg == true)
-            {
-                CSegMatrix* csegMatrix = dynamic_cast<CSegMatrix*>(matrix);
-                csegMatrix->extend();
 
-                csegMatrix->writeColor(result, runningTimeInfo.ngrp);
-            }
-            else if(configuration->oMethod == CLI::PROFIT)
-            {
-                ProfitPartitionMatrix* nmatrix = dynamic_cast<ProfitPartitionMatrix*> (matrix);
-                nmatrix->extend();
-                nmatrix->writeColor(result, runningTimeInfo.ngrp);
-            }
-            else
-            {
-                writeNormalColoring(configuration, matrix,result, runningTimeInfo.ngrp);
-            }
-
-
+            writeNormalColoring(configuration, matrix,result, runningTimeInfo.ngrp);
         }
         // Verification Block Ends
         // ------------------------------------------------------------
