@@ -112,9 +112,7 @@ CPPUNIT_CONFIG = @CPPUNIT_CONFIG@
 CPPUNIT_LIBS = @CPPUNIT_LIBS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-
-# SUBDIRS = src test/src fortran
-CXXFLAGS = -pg
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -189,6 +187,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+
+# SUBDIRS = src test/src fortran
+#CXXFLAGS=-pg
 SUBDIRS = src test/src examples
 #EXTRA_DIST = doc/UserDocumentation/UserDoc.pdf doc/UserDocumentation/TechnicalDoc.pdf src/README test/src/README
 EXTRA_DIST = src/README test/src/README
