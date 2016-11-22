@@ -458,6 +458,8 @@ int run(Configuration *configuration)
         result.ordering_time = ordering_time;
         result.coloring_time = coloring_time;
 
+	//cout<<configuration->inputfile<<","<<configuration->M<<","<<configuration->printInfo<<","<<nnz<<",";
+
         if(configuration->io_at_end)
             result.printMatrixInfo();
         result.printResult();

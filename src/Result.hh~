@@ -36,7 +36,7 @@ public:
 
     void printInfo()
     {
-        cout << "- " << endl;
+        /*cout << "- " << endl;
         cout << "    commandLine: " << configuration->commandLine << endl;
         cout << "    inputFile: " << inputFile << endl;
         if(is_Cseg)
@@ -51,9 +51,8 @@ public:
             cout << "    segmented: " << "no" << endl; ;
 
         cout << "    method: " << CLI::method_to_string(method) << endl;	
-
-	//for testing only 
-	//cout<<inputFile<<","<<CLI::method_to_string(method)<<",";
+*/
+	
     }
 
     void printMatrixInfo()
@@ -76,7 +75,7 @@ public:
             cout << "    coloring_time: " << coloring_time << endl;
 */
 	
-	cout<<ordering_time<<","<<coloring_time<<","<<totalColors<<endl;
+	cout<<CLI::method_to_string(method)<<","<<ordering_time<<","<<coloring_time<<","<<totalColors<<endl;
 
     }
 };
