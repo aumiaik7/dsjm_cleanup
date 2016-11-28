@@ -113,6 +113,8 @@ Configuration* processCommandLineParameters(int argc, char **argv, Configuration
                 ;
             else if(configuration->oMethod == CLI::SDO)
                 ;
+	    else if (configuration->oMethod == CLI::SLO_RLF)
+                ;
 
             else if (configuration->oMethod == CLI::RLF_SLO)
                 ;

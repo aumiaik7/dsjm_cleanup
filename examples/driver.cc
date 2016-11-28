@@ -171,6 +171,12 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
         }
 	else if(configuration->oMethod == CLI::SLO_RLF)
 	{
+ 		timer.Start();int *list;
+            	list = new int[configuration->N+1];
+		ngrp = new int[configuration->N+1];
+		success = matrix->slo(list);
+		maxgrp =  matrix->slo_rlf(list,ngrp);
+            	timer.Stop();
 			
 	}
         else

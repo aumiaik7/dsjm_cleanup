@@ -169,6 +169,16 @@ RunningTimeInfo runOrderingAndColoringAlgorithm(Configuration* configuration, T*
 
             coloring_time = timer.GetWallTime();
         }
+	else if(configuration->oMethod == CLI::SLO_RLF)
+	{
+ 		timer.Start();int *list;
+            	list = new int[configuration->N+1];
+		ngrp = new int[configuration->N+1];
+		success = matrix->slo(ngrp);
+		maxgrp =  matrix->slo_rlf(list,ngrp);
+            	timer.Stop();
+			
+	}
         else
         {
             cerr << "Unknown Method for Ordering" << endl;

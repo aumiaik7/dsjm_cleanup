@@ -810,6 +810,267 @@ int Matrix::rlf(int *color)
     }
 }
 
+int Matrix::slo_rlf(int *list,int *color)
+{
+
+    /*
+     * Overview:
+     * In RLF coloring algorithm, we maintain three sets of vertices in three
+     * sets,
+     *     1. set V for the admissible columns, initially it contains all the
+     *        from the graph G(A).
+     *     2. set U for the columns non-admissible to current color class q. At
+     *        start of a new color class this set is empty.
+     *     3. set C for the colored class.
+     *
+     * At the start of each color class we choose a column jcol with the maximal
+     * degree in set V.
+     * At other steps we choose a column jcol from set V , which has the maximal
+     * number of neighbors in set U, we call it U-Degree.
+     *
+     * As each column is chosen, it is colored with the value of the current
+     * color class q, and moved from the set V to C. All the adjacent columns
+     * are moved to set U, as inadmissible columns for the current. set.
+     *
+     * As columns are added to set U, we update the U-Degree of each column in
+     * set V.
+     *
+     * Coloring is finished when all the columns are colored.
+     */
+
+    int *tag;
+    int *blackList;
+
+    bool *inU;
+    int *u_tag;
+
+    try
+    {
+        BucketPQ<MaxQueue> u_queue(this->maxdeg, N); // Priority queue for
+                                                     // choosing column from set
+                                                     // U.
+        BucketPQ<MaxQueue> priority_queue(this->maxdeg, N); // Priority queue
+                                                            // for choosing
+                                                            // column from set
+                                                            // V.
+
+        tag = new int[N+1]; // For a column jcol, if tag[jcol] = N, then this
+                            // column has already been colored. If 0 < tag[jcol]
+                            // (= numord) < N, then jcol has been processed for
+                            // a column in numord step.
+
+
+        blackList = new int[M+1]; // If, blackList[irow] = q, where q is the
+                                  // color class and irow is a row number,  then any column
+                                  // having nonzero element in irow-th row
+                                  // cannot be included in the q-th color
+                                  // class. We maintain this array to gain
+                                  // better performance in RLF.
+
+
+        // Initialize BlackList array.
+        for ( int i = 1 ; i <= M; i++)
+        {
+            blackList[i] = 0;
+        }
+
+
+        inU = new bool[N+1]; // If, inU[jcol] = true, then jcol is a member of
+                             // set U at that time.
+
+        u_tag = new int[N+1]; // Works similarly as in <id:tag> array, but
+                              // applicable to columns of set U only. If
+                              // u_tag[ic] = jcol, then the column ic has been
+                              // processed for column jcol.
+
+
+
+
+        int u_maxdeg = 0;
+
+
+        int q = 1; // Current color class, each column picked is colored to the
+                   // value of q.
+
+        int maxdeg = 0;
+
+        int numord = 1; // Holds the order value/step of choosing column for
+                        // coloring. We increase the value by 1 after coloring
+                        // each column.
+
+        int countU = 0; // Number of elements in set U
+        int countV = N; // Number of elements in set V
+        int countC = 0; // Number of elements in set C
+        int count = 0;
+
+
+        // Initialize the integer arrays <id:tag>, <id:inU> and <id:u_tag>.
+        for(int jp = 1; jp <=N ; jp++)
+        {
+            tag[jp] = 0;
+            maxdeg = max(maxdeg,ndeg[list[jp]]);
+            inU[jp] = false;
+
+            u_tag[jp] = 0;
+        }
+
+        // Initialize both of the prioirty queues.
+        for (int jp = 1; jp <= N ; jp++)
+        {
+	    //cout<<list[jp]<<" "<<ndeg[list[jp]]<<";";
+            priority_queue.insert(list[jp], ndeg[list[jp]]);
+            u_queue.insert(jp, 0);
+        }
+        bool newColorClass = true; // Flag variable to indicate whether we
+                                   // have just picked a column for a new
+                                   // color class or not. It stays true for
+                                   // the first column in each color class.
+
+        while(true)
+        {
+            int jcol;
+
+
+            if (newColorClass == true)
+            {
+                newColorClass = false;
+
+                // Choose a column jcol of maximal degree from
+                // <id:priority_queue>
+                Item item = priority_queue.top();
+                jcol = item.index;
+                maxdeg = item.priority;
+		
+
+            }
+            else
+            {
+
+                // Choose a column jcol that has maximal degree in set U.
+                Item item = u_queue.top();
+                jcol = item.index;
+                u_maxdeg = item.priority;
+		
+            }
+
+            // Update the number counters.
+            countV--;
+            countC++;
+
+
+            // Color the chosen column jcol with the value of current color
+            // class.
+            color[jcol] = q;
+            tag[jcol] = N;
+
+            numord++;
+
+            // Termination Test.
+            // If N number of columns has already been colored, then terminate
+            // this function an return the total number of colors used.
+            if(numord > N)
+            {
+                // De-allocate Memory.
+                if(tag) delete[] tag;
+
+                if(inU) delete[] inU;
+                if(u_tag) delete[] u_tag;
+
+                if(blackList) delete[] blackList;
+                numberOfColors = q;
+                return q;
+            }
+
+            // Removed the colored column jcol from both of the priority
+            // queues.
+            priority_queue.remove(jcol);
+            u_queue.remove(jcol);
+
+
+            // Blacklist all the rows which have nonzero elements in the chosen
+            // column jcol.
+            // We do not process any of the columns found on this blacklist,
+            // while updating the u_degree/priority for each of the vertices.
+            for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
+            {
+                int ir = row_ind[jp];
+                blackList[ir] = q;
+            }
+
+
+            // Find all adjacent columns of jcol, and move them to set U.
+            for ( int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
+            {
+                int ir = row_ind[jp];
+
+                for ( int ip = ipntr[ir]; ip < ipntr[ir+1]; ip++)
+                {
+                    int ic= col_ind[ip];
+
+                    if(tag[ic] < numord) // if this adjacent column is not
+                                         // processed for jcol.
+                    {
+                        tag[ic] = numord;
+                        priority_queue.decrease(ic);
+
+                        // Move the column in set U.
+                        if (inU[ic] == false)
+                        {
+                            inU[ic] = true;
+                            countU++;
+                            countV--;
+
+                            u_queue.remove(ic);
+
+                            // Update the U_degrees of the adjacent vertices.
+                            u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,row_ind,ipntr,col_ind,inU,
+                                                                        tag,u_tag,u_queue,blackList,q);
+
+                        }
+                    }
+                }
+            }
+
+            // countV + countC + countU == N.
+            // If countV = 0, the set of admissible columns  V is empty. We
+            // start a new color class, and reset the priority queue for
+            // elements in set U.
+            if ( countV == 0)
+            {
+
+                // Start a new Color Class or Independent set.
+                q = q + 1;
+
+
+                newColorClass = true;
+
+                // Swap values.
+                countV =  countU;
+                countU = 0;
+
+
+                u_maxdeg = 0;
+
+                // Reset the priority queues for the elements in set U.
+                RLF::pq_initializeDegreesToUVertices(N,tag,u_queue,inU,u_tag);
+            }
+        }
+    }
+
+    catch(bad_alloc)
+    {
+        cerr << "ERROR: Memory Exhausted" << endl;
+
+        if(tag) delete[] tag;
+
+        if(inU) delete[] inU;
+        if(u_tag) delete[] u_tag;
+        if(blackList) delete[] blackList;
+
+        return 0;
+    }
+}
+
 
 /**
  * Purpose: 		Computes Largest-First Ordering (LFO) of the columns of a sparse matrix A (i.e. the vertices

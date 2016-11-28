@@ -9,15 +9,12 @@
 
 #include "CLI.h"
 #include "gcolor.hh"
-#include "CSegMatrix.hh"
 #include "mmio.h"
 #include "Matrix.hh"
 #include "Result.hh"
 #include "Configuration.hh"
 #include "driver.hh"
 
-
-#include "PartitionLoader.hh"
 #include "Utility.h"
 
 using namespace std;
@@ -116,20 +113,12 @@ Configuration* processCommandLineParameters(int argc, char **argv, Configuration
                 ;
             else if(configuration->oMethod == CLI::SDO)
                 ;
-            else if(configuration->oMethod == CLI::PROFIT)
+	    else if (configuration->oMethod == CLI::SLO_RLF)
                 ;
-            else if(configuration->oMethod == CLI::PROFIT_RLF)
-                ;
+
             else if (configuration->oMethod == CLI::RLF_SLO)
                 ;
-            else if ( configuration->oMethod == CLI::RLF_IDO)
-                ;
-            else if ( configuration->oMethod == CLI::RLF_LFO)
-                ;
-            else if ( configuration->oMethod == CLI::SLO_RLF)
-                ;
-            else if ( configuration->oMethod == CLI::IDO_RLF)
-                ;
+
             else
                 cout << "Unknown method selected for ordering " << endl;
             break;

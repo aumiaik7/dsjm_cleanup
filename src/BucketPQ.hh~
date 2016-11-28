@@ -67,6 +67,7 @@ public:
         do
         {
             jcol = head[optimum];
+	    //std::cout<<" Head[opt]  "<< jcol;
             if(jcol > _invalid) // BUG LOCATION: RISK,
             {             // As we are using zero based indexing in
                           // our PriorityQueue Implementation. So ,be
@@ -77,6 +78,7 @@ public:
             optimum = cmp_fun.next_op(optimum);
             assert(optimum > _invalid);
         }while(1);
+	//std::cout<<", "<<jcol<<" "<<v_priority[jcol]<< " "<< optimum;
         assert(v_priority[jcol] == optimum);
         return Item( jcol, v_priority[jcol] );
     }

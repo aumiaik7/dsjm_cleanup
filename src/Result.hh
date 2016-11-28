@@ -36,7 +36,7 @@ public:
 
     void printInfo()
     {
-        cout << "- " << endl;
+        /*cout << "- " << endl;
         cout << "    commandLine: " << configuration->commandLine << endl;
         cout << "    inputFile: " << inputFile << endl;
         if(is_Cseg)
@@ -50,15 +50,15 @@ public:
         else
             cout << "    segmented: " << "no" << endl; ;
 
-
-	
+	*/
+	cout << inputFile <<","<<CLI::method_to_string(configuration->oMethod);
     }
 
     void printMatrixInfo()
     {
-        cout << "    matrix_M: " << matrix_M << endl;
-        cout << "    matrix_N: " << matrix_N << endl;
-        cout << "    matrix_NNZ: " << matrix_NNZ << endl;
+        //cout << "    matrix_M: " << matrix_M << endl;
+        //cout << "    matrix_N: " << matrix_N << endl;
+        //cout << "    matrix_NNZ: " << matrix_NNZ << endl;
 
 	
     }
@@ -66,12 +66,13 @@ public:
     void printResult()
     {
 	
-        cout << "    totalColors: " << totalColors << endl;
-        if (ordering_time >= 0)
-            cout << "    ordering_time: " << ordering_time << endl;
+	cout<<","<<totalColors<<endl;
+        //cout << "    totalColors: " << totalColors << endl;
+        //if (ordering_time >= 0)
+        //    cout << "    ordering_time: " << ordering_time << endl;
 
-        if(coloring_time >= 0)
-            cout << "    coloring_time: " << coloring_time << endl;
+        //if(coloring_time >= 0)
+         //   cout << "    coloring_time: " << coloring_time << endl;
 
 	
 

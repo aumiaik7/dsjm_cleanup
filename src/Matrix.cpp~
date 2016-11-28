@@ -6,7 +6,6 @@
 #include <stdexcept>
 
 #include "Matrix.hh"
-//#include "NNZTag.hh"
 
 #include "BucketPQ.hh"
 #include "Utility.h"
@@ -56,10 +55,10 @@ Matrix::~Matrix()
 bool Matrix::computedegree()
 {
     maxdeg = -1;
-    int *w;
+    int *tag;
     try
     {
-        w = new int[N+1]; // Temporary working array of size N+1. If w[jcol] =
+        tag = new int[N+1]; // Temporary working array of size N+1. If w[jcol] =
                           // N, then the degree of column jcol has been
                           // computed.
 
@@ -68,7 +67,7 @@ bool Matrix::computedegree()
         for(int jp = 1; jp <= N; jp++)
         {
             ndeg[jp] = 0;
-            w[jp] = 0;
+            tag[jp] = 0;
         }
 
         // At each step, choose a column <id:jcol> and visit all
@@ -76,33 +75,33 @@ bool Matrix::computedegree()
         // G(A).
         for(int jcol = 2; jcol <= N; jcol++)
         {
-            w[jcol] = N;
+            tag[jcol] = N;
             for(int jp = jpntr[jcol]; jp <= jpntr[jcol+1]-1 ;jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 for (int ip = ipntr[ir]; ip <=  ipntr[ir+1]-1 ;ip++  )
                 {
-                    int ic = indCol[ip];
-                    if (w[ic] < jcol)
+                    int ic = col_ind[ip];
+                    if (tag[ic] < jcol)
                     {
-                        w[ic] = jcol;
+                        tag[ic] = jcol;
                         ndeg[ic] = ndeg[ic] + 1;
                         ndeg[jcol] = ndeg[jcol] + 1;
-                        maxdeg = std::max(ndeg[jcol],maxdeg);
-                        maxdeg = std::max(ndeg[ic], maxdeg);
+                        maxdeg = max(ndeg[jcol],maxdeg);
+                        maxdeg = max(ndeg[ic], maxdeg);
                     }
                 }
             }
         }
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
-        delete[] w;
+        delete[] tag;
         return false;
     }
     if(maxdeg == -1)
         maxdeg = 0;
-    delete[] w;
+    delete[] tag;
     return true;
 }
 
@@ -142,18 +141,18 @@ int Matrix::greedycolor(int *order, int *color)
     if(order == NULL || color == NULL)
         return 0;
 
-    int *w;                     // working array of size n+1. It is used to mark
+    int *tag;                     // working array of size n+1. It is used to mark
                                 // the colors already used for adjacent columns
     int maxgrp = 0;
     int ic,ip,ir,j,jcol,jp;
     try
     {
-        w = new int[N+1];       // working array of size n+1
+        tag = new int[N+1];       // working array of size n+1
 
         for (jp = 1; jp <=  N ;jp++  ) // Initialization of the arrays.
         {
             color[jp] = N;
-            w[jp] = 0;
+            tag[jp] = 0;
         }
 
         for (int seq = 1; seq <=  N ;seq++  ) // Colors are assigned to each column taken
@@ -165,32 +164,36 @@ int Matrix::greedycolor(int *order, int *color)
             // Find all columns adjacent to column jcol.
             for (jp = jpntr[jcol]; jp <  jpntr[jcol+1] ;jp++  )
             {
-                ir = indRow[jp];
+                ir = row_ind[jp];
                 for (ip = ipntr[ir]; ip <  ipntr[ir+1] ;ip++  )
                 {
-                    ic = indCol[ip];
+                    ic = col_ind[ip];
                     // Mark the color number with seq number
-                    w[color[ic]] = seq;
+                    tag[color[ic]] = seq;
                 }
             }
 
             // Assign the smallest un-marked color number to jcol.
             for (jp = 1; jp <=  maxgrp ;jp++  )
             {
-                if (w[jp] != seq)
-                    goto SEQ_L50;
+                if (tag[jp] != seq)
+                {
+                	break;
+                	//goto SEQ_L50;
+                }
             }
-            maxgrp = maxgrp + 1;
-        SEQ_L50:
+            if(jp>maxgrp)
+            	maxgrp = maxgrp + 1;
+        //SEQ_L50:
             color[jcol] = jp;
         }
-        delete[] w;
+        delete[] tag;
         numberOfColors = maxgrp;
         return maxgrp;
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
-        delete[] w;
+        delete[] tag;
         return 0;
     }
 }
@@ -226,7 +229,7 @@ bool Matrix::slo(int *list)
         return false;
 
 
-    std::vector<int> tag;
+    vector<int> tag;
 
     try
     {
@@ -239,7 +242,7 @@ bool Matrix::slo(int *list)
             priority_queue.insert(jp,ndeg[jp]); // assume that ndeg has already been
             // computed (by computeDegree() method)
             tag[jp] = N;
-            mindeg = std::min(mindeg,ndeg[jp]);
+            mindeg = min(mindeg,ndeg[jp]);
         }
 
         int maximalClique = 0; // Reset maximalClique. It will be set in the while loop
@@ -284,12 +287,12 @@ bool Matrix::slo(int *list)
 
             for(jp = jpntr[jcol]; jp <= jpntr[jcol+1] -1;jp++)
             {
-                ir = indRow[jp] ;
+                ir = row_ind[jp] ;
 
                 // For each row ir,determine all nonzero entries (ir,ic)
                 for(ip = ipntr[ir] ; ip <= ipntr[ir+1] - 1; ip++)
                 {
-                    ic = indCol[ip];
+                    ic = col_ind[ip];
                     /* Array tag marks columns which are adjacent to
                      * column jcol
                      */
@@ -302,18 +305,18 @@ bool Matrix::slo(int *list)
                         // Update the degree in the priority queue.
                         priority_queue.decrease(ic);
                         numdeg = priority_queue.get(ic).priority;
-                        mindeg = std::min(mindeg,numdeg);
+                        mindeg = min(mindeg,numdeg);
 
                     }
                 }
             }
         }
     }
-    catch(std::bad_alloc) // for std::vector.reserve()
+    catch(bad_alloc) // for vector.reserve()
     {
         return false;
     }
-    catch(length_error) // for std::vector.reserve()
+    catch(length_error) // for vector.reserve()
     {
         return false;
     }
@@ -385,8 +388,6 @@ bool Matrix::ido(int *order )
         MatrixUtility::indexsort(N,N-1,ndeg,-1,tag/* index*/ ,previous/* last
                                                                        */ ,next/* next
                                                                                 */ );
-
-
         // Initialize the doubly linked list, and <id:tag> and <id:order> integer array.
         for(int jp =N ; jp >= 1 ; jp--)
         {
@@ -417,7 +418,7 @@ bool Matrix::ido(int *order )
         {
             // update the size of the largest clique
             // found during the ordering.
-            if (maxinc == 0)
+        	if (maxinc == 0)
                 ncomp = 0;
             ncomp = ncomp + 1;
             if (maxinc + 1 == ncomp)
@@ -435,11 +436,11 @@ bool Matrix::ido(int *order )
                     maxinc = maxinc - 1;
                 }while(1);
 
-                // We search a distance of maxLast length to find the colum with
+
+                // We search a distance of maxLast length to find the column with
                 // maximal degree in the original graph.
                 for(int numlst = 1,  numwgt = -1; numlst <= maxLast; numlst++)
                 {
-
                     if (ndeg[jp] > numwgt)
                     {
                         numwgt = ndeg[jp];
@@ -467,10 +468,10 @@ bool Matrix::ido(int *order )
             // Find all columns adjacent to jcol
             for(int jp = jpntr[jcol] ; jp <= jpntr[jcol+1] -1; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 for(int ip = ipntr[ir];ip <=  ipntr[ir+1]-1; ip++)
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
 
                     if (tag[ic] < numord)
                     {
@@ -505,9 +506,9 @@ bool Matrix::ido(int *order )
         }
 
     }
-    catch (std::bad_alloc)
+    catch (bad_alloc)
     {
-        std::cerr << "Memory Exhausted in Matrix::IDO\n";
+        cerr << "Memory Exhausted in Matrix::IDO\n";
 
         if(head) delete[] head;
         if(previous) delete[] previous;
@@ -731,7 +732,7 @@ int Matrix::rlf(int *color)
             // while updating the u_degree/priority for each of the vertices.
             for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
                 blackList[ir] = q;
             }
 
@@ -739,11 +740,11 @@ int Matrix::rlf(int *color)
             // Find all adjacent columns of jcol, and move them to set U.
             for ( int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
 
                 for ( int ip = ipntr[ir]; ip < ipntr[ir+1]; ip++)
                 {
-                    int ic= indCol[ip];
+                    int ic= col_ind[ip];
 
                     if(tag[ic] < numord) // if this adjacent column is not
                                          // processed for jcol.
@@ -761,7 +762,7 @@ int Matrix::rlf(int *color)
                             u_queue.remove(ic);
 
                             // Update the U_degrees of the adjacent vertices.
-                            u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,indRow,ipntr,indCol,inU,
+                            u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,row_ind,ipntr,col_ind,inU,
                                                                         tag,u_tag,u_queue,blackList,q);
 
                         }
@@ -795,9 +796,271 @@ int Matrix::rlf(int *color)
         }
     }
 
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
-        std::cerr << "ERROR: Memory Exhausted" << std::endl;
+        cerr << "ERROR: Memory Exhausted" << endl;
+
+        if(tag) delete[] tag;
+
+        if(inU) delete[] inU;
+        if(u_tag) delete[] u_tag;
+        if(blackList) delete[] blackList;
+
+        return 0;
+    }
+}
+
+int Matrix::slo_rlf(int *list,int *color)
+{
+
+    /*
+     * Overview:
+     * In RLF coloring algorithm, we maintain three sets of vertices in three
+     * sets,
+     *     1. set V for the admissible columns, initially it contains all the
+     *        from the graph G(A).
+     *     2. set U for the columns non-admissible to current color class q. At
+     *        start of a new color class this set is empty.
+     *     3. set C for the colored class.
+     *
+     * At the start of each color class we choose a column jcol with the maximal
+     * degree in set V.
+     * At other steps we choose a column jcol from set V , which has the maximal
+     * number of neighbors in set U, we call it U-Degree.
+     *
+     * As each column is chosen, it is colored with the value of the current
+     * color class q, and moved from the set V to C. All the adjacent columns
+     * are moved to set U, as inadmissible columns for the current. set.
+     *
+     * As columns are added to set U, we update the U-Degree of each column in
+     * set V.
+     *
+     * Coloring is finished when all the columns are colored.
+     */
+
+    int *tag;
+    int *blackList;
+
+    bool *inU;
+    int *u_tag;
+
+    try
+    {
+        BucketPQ<MaxQueue> u_queue(this->maxdeg, N); // Priority queue for
+                                                     // choosing column from set
+                                                     // U.
+        BucketPQ<MaxQueue> priority_queue(this->maxdeg, N); // Priority queue
+                                                            // for choosing
+                                                            // column from set
+                                                            // V.
+
+        tag = new int[N+1]; // For a column jcol, if tag[jcol] = N, then this
+                            // column has already been colored. If 0 < tag[jcol]
+                            // (= numord) < N, then jcol has been processed for
+                            // a column in numord step.
+
+
+        blackList = new int[M+1]; // If, blackList[irow] = q, where q is the
+                                  // color class and irow is a row number,  then any column
+                                  // having nonzero element in irow-th row
+                                  // cannot be included in the q-th color
+                                  // class. We maintain this array to gain
+                                  // better performance in RLF.
+
+
+        // Initialize BlackList array.
+        for ( int i = 1 ; i <= M; i++)
+        {
+            blackList[i] = 0;
+        }
+
+
+        inU = new bool[N+1]; // If, inU[jcol] = true, then jcol is a member of
+                             // set U at that time.
+
+        u_tag = new int[N+1]; // Works similarly as in <id:tag> array, but
+                              // applicable to columns of set U only. If
+                              // u_tag[ic] = jcol, then the column ic has been
+                              // processed for column jcol.
+
+
+
+
+        int u_maxdeg = 0;
+
+
+        int q = 1; // Current color class, each column picked is colored to the
+                   // value of q.
+
+        int maxdeg = 0;
+
+        int numord = 1; // Holds the order value/step of choosing column for
+                        // coloring. We increase the value by 1 after coloring
+                        // each column.
+
+        int countU = 0; // Number of elements in set U
+        int countV = N; // Number of elements in set V
+        int countC = 0; // Number of elements in set C
+        int count = 0;
+
+
+        // Initialize the integer arrays <id:tag>, <id:inU> and <id:u_tag>.
+        for(int jp = 1; jp <=N ; jp++)
+        {
+            tag[jp] = 0;
+            maxdeg = max(maxdeg,ndeg[list[jp]]);
+            inU[jp] = false;
+
+            u_tag[jp] = 0;
+        }
+
+        // Initialize both of the prioirty queues.
+        for (int jp = 1; jp <= N ; jp++)
+        {
+	    //cout<<list[jp]<<" "<<ndeg[list[jp]]<<";";
+            priority_queue.insert(list[jp], ndeg[list[jp]]);
+            u_queue.insert(jp, 0);
+        }
+	cout<<"DONE    "<<endl;
+        bool newColorClass = true; // Flag variable to indicate whether we
+                                   // have just picked a column for a new
+                                   // color class or not. It stays true for
+                                   // the first column in each color class.
+
+        while(true)
+        {
+            int jcol;
+
+
+            if (newColorClass == true)
+            {
+                newColorClass = false;
+
+                // Choose a column jcol of maximal degree from
+                // <id:priority_queue>
+                Item item = priority_queue.top();
+                jcol = item.index;
+                maxdeg = item.priority;
+		
+
+            }
+            else
+            {
+
+                // Choose a column jcol that has maximal degree in set U.
+                Item item = u_queue.top();
+                jcol = item.index;
+                u_maxdeg = item.priority;
+		
+            }
+
+            // Update the number counters.
+            countV--;
+            countC++;
+
+
+            // Color the chosen column jcol with the value of current color
+            // class.
+            color[jcol] = q;
+            tag[jcol] = N;
+
+            numord++;
+
+            // Termination Test.
+            // If N number of columns has already been colored, then terminate
+            // this function an return the total number of colors used.
+            if(numord > N)
+            {
+                // De-allocate Memory.
+                if(tag) delete[] tag;
+
+                if(inU) delete[] inU;
+                if(u_tag) delete[] u_tag;
+
+                if(blackList) delete[] blackList;
+                numberOfColors = q;
+                return q;
+            }
+
+            // Removed the colored column jcol from both of the priority
+            // queues.
+            priority_queue.remove(jcol);
+            u_queue.remove(jcol);
+
+
+            // Blacklist all the rows which have nonzero elements in the chosen
+            // column jcol.
+            // We do not process any of the columns found on this blacklist,
+            // while updating the u_degree/priority for each of the vertices.
+            for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
+            {
+                int ir = row_ind[jp];
+                blackList[ir] = q;
+            }
+
+
+            // Find all adjacent columns of jcol, and move them to set U.
+            for ( int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
+            {
+                int ir = row_ind[jp];
+
+                for ( int ip = ipntr[ir]; ip < ipntr[ir+1]; ip++)
+                {
+                    int ic= col_ind[ip];
+
+                    if(tag[ic] < numord) // if this adjacent column is not
+                                         // processed for jcol.
+                    {
+                        tag[ic] = numord;
+                        priority_queue.decrease(ic);
+
+                        // Move the column in set U.
+                        if (inU[ic] == false)
+                        {
+                            inU[ic] = true;
+                            countU++;
+                            countV--;
+
+                            u_queue.remove(ic);
+
+                            // Update the U_degrees of the adjacent vertices.
+                            u_maxdeg = RLF::pq_updateDegreesToUVertices(N,ic,u_maxdeg, jpntr,row_ind,ipntr,col_ind,inU,
+                                                                        tag,u_tag,u_queue,blackList,q);
+
+                        }
+                    }
+                }
+            }
+
+            // countV + countC + countU == N.
+            // If countV = 0, the set of admissible columns  V is empty. We
+            // start a new color class, and reset the priority queue for
+            // elements in set U.
+            if ( countV == 0)
+            {
+
+                // Start a new Color Class or Independent set.
+                q = q + 1;
+
+
+                newColorClass = true;
+
+                // Swap values.
+                countV =  countU;
+                countU = 0;
+
+
+                u_maxdeg = 0;
+
+                // Reset the priority queues for the elements in set U.
+                RLF::pq_initializeDegreesToUVertices(N,tag,u_queue,inU,u_tag);
+            }
+        }
+    }
+
+    catch(bad_alloc)
+    {
+        cerr << "ERROR: Memory Exhausted" << endl;
 
         if(tag) delete[] tag;
 
@@ -907,7 +1170,7 @@ bool Matrix::lfo(int *order)
             }
         }
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
         delete[] next ;
         delete[] head;
@@ -1065,7 +1328,7 @@ int Matrix::sdo(int *color)
                 maxsat--;
             }
 
-            // We search a distance of maxLast length to find the colum with
+            // We search a distance of maxLast length to find the column with
             // maximal degree in the original graph.
             for(int numlst = 1,numwgt = -1;  numlst <= maxlst; numlst++)
             {
@@ -1085,11 +1348,11 @@ int Matrix::sdo(int *color)
 
             for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
 
                 for( int ip = ipntr[ir]; ip < ipntr[ir + 1] ; ip++)
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
                     seqTag[color[ic]] = jcol;
                 }
             }
@@ -1098,11 +1361,16 @@ int Matrix::sdo(int *color)
             for (newColor = 1; newColor <= maxgrp; newColor++)
             {
                 if(seqTag[newColor] != jcol)
-                    goto SDO_L50;
+                {
+                	break;
+                	//goto SDO_L50;
+                }
             }
-            maxgrp = maxgrp + 1;
+           //changed this to remove the goto statement
+           if(newColor>maxgrp)
+        	   maxgrp = maxgrp + 1;
 
-        SDO_L50:
+        //SDO_L50:
             color[jcol] = newColor;
 
             satDeg[jcol] = numord;
@@ -1124,11 +1392,11 @@ int Matrix::sdo(int *color)
 
             for (int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
             {
-                int ir = indRow[jp];
+                int ir = row_ind[jp];
 
                 for( int ip = ipntr[ir] ; ip < ipntr[ir+1] ; ip++)
                 {
-                    int ic = indCol[ip];
+                    int ic = col_ind[ip];
 
                     if(tag[ic] < numord)
                     {
@@ -1139,20 +1407,21 @@ int Matrix::sdo(int *color)
                         // search the neighborhood of ic
                         for (int x_jp = jpntr[ic]; x_jp < jpntr[ic+1] ; x_jp++)
                         {
-                            int x_ir = indRow[x_jp];
+                            int x_ir = row_ind[x_jp];
                             for (int x_ip = ipntr[ir]; x_ip < ipntr[ir+1]; x_ip++)
                             {
-                                int x_ic = indCol[x_ip];
+                                int x_ic = col_ind[x_ip];
                                 if(color[x_ic] == newColor)
                                 {
                                     isNewColor = false;
-                                    goto SDO_ISNEWCOLOR;
+                                    //goto SDO_ISNEWCOLOR;
+                                    break;
                                 }
                             }
                         }
 
                         // ========================================
-                    SDO_ISNEWCOLOR:
+                    //SDO_ISNEWCOLOR:
                         if(isNewColor)
                         {
                             // update the pointers to the current saturation
@@ -1171,9 +1440,9 @@ int Matrix::sdo(int *color)
 
         }
     }
-    catch(std::bad_alloc)
+    catch(bad_alloc)
     {
-        std::cerr << "ERROR: Memory Exhausted " << std::endl;
+        cerr << "ERROR: Memory Exhausted " << endl;
 
         if(head) delete[] head;
         if(previous) delete[] previous;
@@ -1194,8 +1463,8 @@ int Matrix::sdo(int *color)
 }
 /* sdo() ENDS*/
 
-int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int *indRow,
-                                     int *ipntr,int *indCol, bool * inU, int *tag, int *u_tag,
+int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int *row_ind,
+                                     int *ipntr,int *col_ind, bool * inU, int *tag, int *u_tag,
                                      int *u_list, int *head, int *next, int *previous,int *list, int *blackList,const int q)
 {
     // Update the degrees of the adjacent vertices.
@@ -1207,12 +1476,12 @@ int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int 
 
     for( int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
     {
-        ir = indRow[jp];
+        ir = row_ind[jp];
         if(blackList[ir] == q)
             continue;
         for(int ip = ipntr[ir]; ip < ipntr[ir+1] ; ip++)
         {
-            ic = indCol[ip];
+            ic = col_ind[ip];
 
             if(inU[ic] == false && tag[ic] < n && u_tag[ic] != jcol)
             {
