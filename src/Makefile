@@ -105,7 +105,7 @@ CPPUNIT_CONFIG = /usr/bin/cppunit-config
 CPPUNIT_LIBS = -lcppunit -ldl
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = 
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"dsjm\" -DVERSION=\"0.2\"
 DEPDIR = .deps
@@ -180,6 +180,11 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
+
+#DSJM_FLAGS = $(EXTRA_FLAGS)  -O3
+#AM_CPPFLAGS =  $(DSJM_FLAGS) 
+#AM_LDFLAGS = $(DSJM_FLAGS)
+AM_CXXFLAGS = -O3
 CORE_SOURCES = mmio.cpp Matrix.cpp  CLI.cpp Utility.cc Timer.cpp  IMatrix.cc  Configuration.cc  IRowColumnDS.cc 
 INCLUDEdir = -I$(top_srcdir)/src
 INCLUDE_HEADERS = BucketPQ.hh CLI.h Definitions.h Configuration.hh IMatrix.hh IRowColumnDS.hh Matrix.hh mmio.h NNZTag.hh OrderingMethod.hh detail/PriorityQueue.hh Result.hh RLF.hh Timer.h Utility.h

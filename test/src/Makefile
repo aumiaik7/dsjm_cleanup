@@ -124,7 +124,7 @@ CPPUNIT_CONFIG = /usr/bin/cppunit-config
 CPPUNIT_LIBS = -lcppunit -ldl
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = 
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"dsjm\" -DVERSION=\"0.2\"
 DEPDIR = .deps
@@ -199,6 +199,11 @@ target_alias =
 top_build_prefix = ../../
 top_builddir = ../..
 top_srcdir = ../..
+
+#DSJM_FLAGS = $(EXTRA_FLAGS)  -O3
+#AM_CPPFLAGS =  $(DSJM_FLAGS) 
+#AM_LDFLAGS = $(DSJM_FLAGS)
+#AM_CXXFLAGS= -O3
 EXTRA_DIST = MatrixTest.h ApplicationTest.h HeapPQTest.hh
 CORE_SOURCE_FILES = $(top_srcdir)/src/mmio.cpp $(top_srcdir)/src/Matrix.cpp  $(top_srcdir)/src/CLI.cpp $(top_srcdir)/src/Utility.cc $(top_srcdir)/src/Timer.cpp  $(top_srcdir)/src/IMatrix.cc  $(top_srcdir)/src/Configuration.cc  $(top_srcdir)/src/IRowColumnDS.cc 
 

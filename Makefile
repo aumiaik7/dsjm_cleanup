@@ -112,7 +112,7 @@ CPPUNIT_CONFIG = /usr/bin/cppunit-config
 CPPUNIT_LIBS = -lcppunit -ldl
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = 
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"dsjm\" -DVERSION=\"0.2\"
 DEPDIR = .deps
@@ -190,6 +190,8 @@ top_srcdir = .
 
 # SUBDIRS = src test/src fortran
 #CXXFLAGS=-pg
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
+#AM_CXXFLAGS= -O3
 SUBDIRS = src test/src examples
 #EXTRA_DIST = doc/UserDocumentation/UserDoc.pdf doc/UserDocumentation/TechnicalDoc.pdf src/README test/src/README
 EXTRA_DIST = src/README test/src/README

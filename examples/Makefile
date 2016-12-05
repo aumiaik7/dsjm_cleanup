@@ -49,34 +49,20 @@ am__EXEEXT_2 = dsjmverify$(EXEEXT)
 am__EXEEXT_3 = gcolor$(EXEEXT)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(INCLUDEdir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 = ForwardDifference-ForwardDifference.$(OBJEXT) \
-	ForwardDifference-StructuredJacobian.$(OBJEXT)
-am__objects_2 = ForwardDifference-mmio.$(OBJEXT) \
-	ForwardDifference-Matrix.$(OBJEXT) \
-	ForwardDifference-CLI.$(OBJEXT) \
-	ForwardDifference-Utility.$(OBJEXT) \
-	ForwardDifference-Timer.$(OBJEXT) \
-	ForwardDifference-IMatrix.$(OBJEXT) \
-	ForwardDifference-Configuration.$(OBJEXT) \
-	ForwardDifference-IRowColumnDS.$(OBJEXT)
+am__objects_1 = ForwardDifference.$(OBJEXT) \
+	StructuredJacobian.$(OBJEXT)
+am__objects_2 = mmio.$(OBJEXT) Matrix.$(OBJEXT) CLI.$(OBJEXT) \
+	Utility.$(OBJEXT) Timer.$(OBJEXT) IMatrix.$(OBJEXT) \
+	Configuration.$(OBJEXT) IRowColumnDS.$(OBJEXT)
 am_ForwardDifference_OBJECTS = $(am__objects_1) $(am__objects_2)
 ForwardDifference_OBJECTS = $(am_ForwardDifference_OBJECTS)
 ForwardDifference_LDADD = $(LDADD)
-ForwardDifference_LINK = $(CXXLD) $(ForwardDifference_CXXFLAGS) \
-	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_dsjmverify_OBJECTS = dsjmverify.$(OBJEXT)
 dsjmverify_OBJECTS = $(am_dsjmverify_OBJECTS)
 dsjmverify_LDADD = $(LDADD)
-am__objects_3 = gcolor-mmio.$(OBJEXT) gcolor-Matrix.$(OBJEXT) \
-	gcolor-CLI.$(OBJEXT) gcolor-Utility.$(OBJEXT) \
-	gcolor-Timer.$(OBJEXT) gcolor-IMatrix.$(OBJEXT) \
-	gcolor-Configuration.$(OBJEXT) gcolor-IRowColumnDS.$(OBJEXT)
-am_gcolor_OBJECTS = gcolor-gcolor.$(OBJEXT) gcolor-driver.$(OBJEXT) \
-	$(am__objects_3)
+am_gcolor_OBJECTS = gcolor.$(OBJEXT) driver.$(OBJEXT) $(am__objects_2)
 gcolor_OBJECTS = $(am_gcolor_OBJECTS)
 gcolor_LDADD = $(LDADD)
-gcolor_LINK = $(CXXLD) $(gcolor_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -130,7 +116,7 @@ CPPUNIT_CONFIG = /usr/bin/cppunit-config
 CPPUNIT_LIBS = -lcppunit -ldl
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = 
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"dsjm\" -DVERSION=\"0.2\"
 DEPDIR = .deps
@@ -205,6 +191,11 @@ target_alias =
 top_build_prefix = ../
 top_builddir = ..
 top_srcdir = ..
+
+#DSJM_FLAGS = $(EXTRA_FLAGS)  -O3
+#AM_CPPFLAGS =  $(DSJM_FLAGS) 
+#AM_LDFLAGS = $(DSJM_FLAGS)
+AM_CXXFLAGS = -O1
 CORE_SOURCE_FILES = $(top_srcdir)/src/mmio.cpp $(top_srcdir)/src/Matrix.cpp  $(top_srcdir)/src/CLI.cpp $(top_srcdir)/src/Utility.cc $(top_srcdir)/src/Timer.cpp  $(top_srcdir)/src/IMatrix.cc  $(top_srcdir)/src/Configuration.cc  $(top_srcdir)/src/IRowColumnDS.cc 
 INCLUDEdir = -I$(top_srcdir)/example
 INCLUDE_HEADERS = driver.hh Eye.hh FD.hh gcolor.hh StructuredJacobian.hh
@@ -215,12 +206,11 @@ FORWARDDIFFERENCE_SOURCE_FILES = ForwardDifference.cc  StructuredJacobian.cc
 FORWARDDIFFERENCE = ForwardDifference
 VERIFY = dsjmverify
 ForwardDifference_SOURCES = $(FORWARDDIFFERENCE_SOURCE_FILES) $(CORE_SOURCE_FILES)
-ForwardDifference_CXXFLAGS = $(CPP_PROFILING_FLAGS)
+#ForwardDifference_CXXFLAGS = $(CPP_PROFILING_FLAGS)
 #ForwardDifference_LDADD = $(LIB)
 dsjmverify_SOURCES = dsjmverify.cpp
 GCOLOR = gcolor
 gcolor_SOURCES = gcolor.cpp driver.cc $(CORE_SOURCE_FILES)
-gcolor_CXXFLAGS = $(CPP_PROFILING_FLAGS)
 all: all-am
 
 .SUFFIXES:
@@ -294,13 +284,13 @@ clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 ForwardDifference$(EXEEXT): $(ForwardDifference_OBJECTS) $(ForwardDifference_DEPENDENCIES) 
 	@rm -f ForwardDifference$(EXEEXT)
-	$(ForwardDifference_LINK) $(ForwardDifference_OBJECTS) $(ForwardDifference_LDADD) $(LIBS)
+	$(CXXLINK) $(ForwardDifference_OBJECTS) $(ForwardDifference_LDADD) $(LIBS)
 dsjmverify$(EXEEXT): $(dsjmverify_OBJECTS) $(dsjmverify_DEPENDENCIES) 
 	@rm -f dsjmverify$(EXEEXT)
 	$(CXXLINK) $(dsjmverify_OBJECTS) $(dsjmverify_LDADD) $(LIBS)
 gcolor$(EXEEXT): $(gcolor_OBJECTS) $(gcolor_DEPENDENCIES) 
 	@rm -f gcolor$(EXEEXT)
-	$(gcolor_LINK) $(gcolor_OBJECTS) $(gcolor_LDADD) $(LIBS)
+	$(CXXLINK) $(gcolor_OBJECTS) $(gcolor_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -308,27 +298,19 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/ForwardDifference-CLI.Po
-include ./$(DEPDIR)/ForwardDifference-Configuration.Po
-include ./$(DEPDIR)/ForwardDifference-ForwardDifference.Po
-include ./$(DEPDIR)/ForwardDifference-IMatrix.Po
-include ./$(DEPDIR)/ForwardDifference-IRowColumnDS.Po
-include ./$(DEPDIR)/ForwardDifference-Matrix.Po
-include ./$(DEPDIR)/ForwardDifference-StructuredJacobian.Po
-include ./$(DEPDIR)/ForwardDifference-Timer.Po
-include ./$(DEPDIR)/ForwardDifference-Utility.Po
-include ./$(DEPDIR)/ForwardDifference-mmio.Po
+include ./$(DEPDIR)/CLI.Po
+include ./$(DEPDIR)/Configuration.Po
+include ./$(DEPDIR)/ForwardDifference.Po
+include ./$(DEPDIR)/IMatrix.Po
+include ./$(DEPDIR)/IRowColumnDS.Po
+include ./$(DEPDIR)/Matrix.Po
+include ./$(DEPDIR)/StructuredJacobian.Po
+include ./$(DEPDIR)/Timer.Po
+include ./$(DEPDIR)/Utility.Po
+include ./$(DEPDIR)/driver.Po
 include ./$(DEPDIR)/dsjmverify.Po
-include ./$(DEPDIR)/gcolor-CLI.Po
-include ./$(DEPDIR)/gcolor-Configuration.Po
-include ./$(DEPDIR)/gcolor-IMatrix.Po
-include ./$(DEPDIR)/gcolor-IRowColumnDS.Po
-include ./$(DEPDIR)/gcolor-Matrix.Po
-include ./$(DEPDIR)/gcolor-Timer.Po
-include ./$(DEPDIR)/gcolor-Utility.Po
-include ./$(DEPDIR)/gcolor-driver.Po
-include ./$(DEPDIR)/gcolor-gcolor.Po
-include ./$(DEPDIR)/gcolor-mmio.Po
+include ./$(DEPDIR)/gcolor.Po
+include ./$(DEPDIR)/mmio.Po
 
 .cc.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -344,285 +326,117 @@ include ./$(DEPDIR)/gcolor-mmio.Po
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-ForwardDifference-ForwardDifference.o: ForwardDifference.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-ForwardDifference.o -MD -MP -MF $(DEPDIR)/ForwardDifference-ForwardDifference.Tpo -c -o ForwardDifference-ForwardDifference.o `test -f 'ForwardDifference.cc' || echo '$(srcdir)/'`ForwardDifference.cc
-	$(am__mv) $(DEPDIR)/ForwardDifference-ForwardDifference.Tpo $(DEPDIR)/ForwardDifference-ForwardDifference.Po
-#	source='ForwardDifference.cc' object='ForwardDifference-ForwardDifference.o' libtool=no \
+mmio.o: $(top_srcdir)/src/mmio.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mmio.o -MD -MP -MF $(DEPDIR)/mmio.Tpo -c -o mmio.o `test -f '$(top_srcdir)/src/mmio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/mmio.cpp
+	$(am__mv) $(DEPDIR)/mmio.Tpo $(DEPDIR)/mmio.Po
+#	source='$(top_srcdir)/src/mmio.cpp' object='mmio.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-ForwardDifference.o `test -f 'ForwardDifference.cc' || echo '$(srcdir)/'`ForwardDifference.cc
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mmio.o `test -f '$(top_srcdir)/src/mmio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/mmio.cpp
 
-ForwardDifference-ForwardDifference.obj: ForwardDifference.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-ForwardDifference.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-ForwardDifference.Tpo -c -o ForwardDifference-ForwardDifference.obj `if test -f 'ForwardDifference.cc'; then $(CYGPATH_W) 'ForwardDifference.cc'; else $(CYGPATH_W) '$(srcdir)/ForwardDifference.cc'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-ForwardDifference.Tpo $(DEPDIR)/ForwardDifference-ForwardDifference.Po
-#	source='ForwardDifference.cc' object='ForwardDifference-ForwardDifference.obj' libtool=no \
+mmio.obj: $(top_srcdir)/src/mmio.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mmio.obj -MD -MP -MF $(DEPDIR)/mmio.Tpo -c -o mmio.obj `if test -f '$(top_srcdir)/src/mmio.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/mmio.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/mmio.cpp'; fi`
+	$(am__mv) $(DEPDIR)/mmio.Tpo $(DEPDIR)/mmio.Po
+#	source='$(top_srcdir)/src/mmio.cpp' object='mmio.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-ForwardDifference.obj `if test -f 'ForwardDifference.cc'; then $(CYGPATH_W) 'ForwardDifference.cc'; else $(CYGPATH_W) '$(srcdir)/ForwardDifference.cc'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mmio.obj `if test -f '$(top_srcdir)/src/mmio.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/mmio.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/mmio.cpp'; fi`
 
-ForwardDifference-StructuredJacobian.o: StructuredJacobian.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-StructuredJacobian.o -MD -MP -MF $(DEPDIR)/ForwardDifference-StructuredJacobian.Tpo -c -o ForwardDifference-StructuredJacobian.o `test -f 'StructuredJacobian.cc' || echo '$(srcdir)/'`StructuredJacobian.cc
-	$(am__mv) $(DEPDIR)/ForwardDifference-StructuredJacobian.Tpo $(DEPDIR)/ForwardDifference-StructuredJacobian.Po
-#	source='StructuredJacobian.cc' object='ForwardDifference-StructuredJacobian.o' libtool=no \
+Matrix.o: $(top_srcdir)/src/Matrix.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Matrix.o -MD -MP -MF $(DEPDIR)/Matrix.Tpo -c -o Matrix.o `test -f '$(top_srcdir)/src/Matrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Matrix.cpp
+	$(am__mv) $(DEPDIR)/Matrix.Tpo $(DEPDIR)/Matrix.Po
+#	source='$(top_srcdir)/src/Matrix.cpp' object='Matrix.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-StructuredJacobian.o `test -f 'StructuredJacobian.cc' || echo '$(srcdir)/'`StructuredJacobian.cc
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Matrix.o `test -f '$(top_srcdir)/src/Matrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Matrix.cpp
 
-ForwardDifference-StructuredJacobian.obj: StructuredJacobian.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-StructuredJacobian.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-StructuredJacobian.Tpo -c -o ForwardDifference-StructuredJacobian.obj `if test -f 'StructuredJacobian.cc'; then $(CYGPATH_W) 'StructuredJacobian.cc'; else $(CYGPATH_W) '$(srcdir)/StructuredJacobian.cc'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-StructuredJacobian.Tpo $(DEPDIR)/ForwardDifference-StructuredJacobian.Po
-#	source='StructuredJacobian.cc' object='ForwardDifference-StructuredJacobian.obj' libtool=no \
+Matrix.obj: $(top_srcdir)/src/Matrix.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Matrix.obj -MD -MP -MF $(DEPDIR)/Matrix.Tpo -c -o Matrix.obj `if test -f '$(top_srcdir)/src/Matrix.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Matrix.cpp'; fi`
+	$(am__mv) $(DEPDIR)/Matrix.Tpo $(DEPDIR)/Matrix.Po
+#	source='$(top_srcdir)/src/Matrix.cpp' object='Matrix.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-StructuredJacobian.obj `if test -f 'StructuredJacobian.cc'; then $(CYGPATH_W) 'StructuredJacobian.cc'; else $(CYGPATH_W) '$(srcdir)/StructuredJacobian.cc'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Matrix.obj `if test -f '$(top_srcdir)/src/Matrix.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Matrix.cpp'; fi`
 
-ForwardDifference-mmio.o: $(top_srcdir)/src/mmio.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-mmio.o -MD -MP -MF $(DEPDIR)/ForwardDifference-mmio.Tpo -c -o ForwardDifference-mmio.o `test -f '$(top_srcdir)/src/mmio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/mmio.cpp
-	$(am__mv) $(DEPDIR)/ForwardDifference-mmio.Tpo $(DEPDIR)/ForwardDifference-mmio.Po
-#	source='$(top_srcdir)/src/mmio.cpp' object='ForwardDifference-mmio.o' libtool=no \
+CLI.o: $(top_srcdir)/src/CLI.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CLI.o -MD -MP -MF $(DEPDIR)/CLI.Tpo -c -o CLI.o `test -f '$(top_srcdir)/src/CLI.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/CLI.cpp
+	$(am__mv) $(DEPDIR)/CLI.Tpo $(DEPDIR)/CLI.Po
+#	source='$(top_srcdir)/src/CLI.cpp' object='CLI.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-mmio.o `test -f '$(top_srcdir)/src/mmio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/mmio.cpp
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CLI.o `test -f '$(top_srcdir)/src/CLI.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/CLI.cpp
 
-ForwardDifference-mmio.obj: $(top_srcdir)/src/mmio.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-mmio.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-mmio.Tpo -c -o ForwardDifference-mmio.obj `if test -f '$(top_srcdir)/src/mmio.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/mmio.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/mmio.cpp'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-mmio.Tpo $(DEPDIR)/ForwardDifference-mmio.Po
-#	source='$(top_srcdir)/src/mmio.cpp' object='ForwardDifference-mmio.obj' libtool=no \
+CLI.obj: $(top_srcdir)/src/CLI.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CLI.obj -MD -MP -MF $(DEPDIR)/CLI.Tpo -c -o CLI.obj `if test -f '$(top_srcdir)/src/CLI.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/CLI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/CLI.cpp'; fi`
+	$(am__mv) $(DEPDIR)/CLI.Tpo $(DEPDIR)/CLI.Po
+#	source='$(top_srcdir)/src/CLI.cpp' object='CLI.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-mmio.obj `if test -f '$(top_srcdir)/src/mmio.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/mmio.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/mmio.cpp'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CLI.obj `if test -f '$(top_srcdir)/src/CLI.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/CLI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/CLI.cpp'; fi`
 
-ForwardDifference-Matrix.o: $(top_srcdir)/src/Matrix.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Matrix.o -MD -MP -MF $(DEPDIR)/ForwardDifference-Matrix.Tpo -c -o ForwardDifference-Matrix.o `test -f '$(top_srcdir)/src/Matrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Matrix.cpp
-	$(am__mv) $(DEPDIR)/ForwardDifference-Matrix.Tpo $(DEPDIR)/ForwardDifference-Matrix.Po
-#	source='$(top_srcdir)/src/Matrix.cpp' object='ForwardDifference-Matrix.o' libtool=no \
+Utility.o: $(top_srcdir)/src/Utility.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Utility.o -MD -MP -MF $(DEPDIR)/Utility.Tpo -c -o Utility.o `test -f '$(top_srcdir)/src/Utility.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Utility.cc
+	$(am__mv) $(DEPDIR)/Utility.Tpo $(DEPDIR)/Utility.Po
+#	source='$(top_srcdir)/src/Utility.cc' object='Utility.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Matrix.o `test -f '$(top_srcdir)/src/Matrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Matrix.cpp
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Utility.o `test -f '$(top_srcdir)/src/Utility.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Utility.cc
 
-ForwardDifference-Matrix.obj: $(top_srcdir)/src/Matrix.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Matrix.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-Matrix.Tpo -c -o ForwardDifference-Matrix.obj `if test -f '$(top_srcdir)/src/Matrix.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Matrix.cpp'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-Matrix.Tpo $(DEPDIR)/ForwardDifference-Matrix.Po
-#	source='$(top_srcdir)/src/Matrix.cpp' object='ForwardDifference-Matrix.obj' libtool=no \
+Utility.obj: $(top_srcdir)/src/Utility.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Utility.obj -MD -MP -MF $(DEPDIR)/Utility.Tpo -c -o Utility.obj `if test -f '$(top_srcdir)/src/Utility.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Utility.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Utility.cc'; fi`
+	$(am__mv) $(DEPDIR)/Utility.Tpo $(DEPDIR)/Utility.Po
+#	source='$(top_srcdir)/src/Utility.cc' object='Utility.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Matrix.obj `if test -f '$(top_srcdir)/src/Matrix.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Matrix.cpp'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Utility.obj `if test -f '$(top_srcdir)/src/Utility.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Utility.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Utility.cc'; fi`
 
-ForwardDifference-CLI.o: $(top_srcdir)/src/CLI.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-CLI.o -MD -MP -MF $(DEPDIR)/ForwardDifference-CLI.Tpo -c -o ForwardDifference-CLI.o `test -f '$(top_srcdir)/src/CLI.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/CLI.cpp
-	$(am__mv) $(DEPDIR)/ForwardDifference-CLI.Tpo $(DEPDIR)/ForwardDifference-CLI.Po
-#	source='$(top_srcdir)/src/CLI.cpp' object='ForwardDifference-CLI.o' libtool=no \
+Timer.o: $(top_srcdir)/src/Timer.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Timer.o -MD -MP -MF $(DEPDIR)/Timer.Tpo -c -o Timer.o `test -f '$(top_srcdir)/src/Timer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Timer.cpp
+	$(am__mv) $(DEPDIR)/Timer.Tpo $(DEPDIR)/Timer.Po
+#	source='$(top_srcdir)/src/Timer.cpp' object='Timer.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-CLI.o `test -f '$(top_srcdir)/src/CLI.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/CLI.cpp
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Timer.o `test -f '$(top_srcdir)/src/Timer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Timer.cpp
 
-ForwardDifference-CLI.obj: $(top_srcdir)/src/CLI.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-CLI.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-CLI.Tpo -c -o ForwardDifference-CLI.obj `if test -f '$(top_srcdir)/src/CLI.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/CLI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/CLI.cpp'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-CLI.Tpo $(DEPDIR)/ForwardDifference-CLI.Po
-#	source='$(top_srcdir)/src/CLI.cpp' object='ForwardDifference-CLI.obj' libtool=no \
+Timer.obj: $(top_srcdir)/src/Timer.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Timer.obj -MD -MP -MF $(DEPDIR)/Timer.Tpo -c -o Timer.obj `if test -f '$(top_srcdir)/src/Timer.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Timer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Timer.cpp'; fi`
+	$(am__mv) $(DEPDIR)/Timer.Tpo $(DEPDIR)/Timer.Po
+#	source='$(top_srcdir)/src/Timer.cpp' object='Timer.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-CLI.obj `if test -f '$(top_srcdir)/src/CLI.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/CLI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/CLI.cpp'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Timer.obj `if test -f '$(top_srcdir)/src/Timer.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Timer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Timer.cpp'; fi`
 
-ForwardDifference-Utility.o: $(top_srcdir)/src/Utility.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Utility.o -MD -MP -MF $(DEPDIR)/ForwardDifference-Utility.Tpo -c -o ForwardDifference-Utility.o `test -f '$(top_srcdir)/src/Utility.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Utility.cc
-	$(am__mv) $(DEPDIR)/ForwardDifference-Utility.Tpo $(DEPDIR)/ForwardDifference-Utility.Po
-#	source='$(top_srcdir)/src/Utility.cc' object='ForwardDifference-Utility.o' libtool=no \
+IMatrix.o: $(top_srcdir)/src/IMatrix.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IMatrix.o -MD -MP -MF $(DEPDIR)/IMatrix.Tpo -c -o IMatrix.o `test -f '$(top_srcdir)/src/IMatrix.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IMatrix.cc
+	$(am__mv) $(DEPDIR)/IMatrix.Tpo $(DEPDIR)/IMatrix.Po
+#	source='$(top_srcdir)/src/IMatrix.cc' object='IMatrix.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Utility.o `test -f '$(top_srcdir)/src/Utility.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Utility.cc
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IMatrix.o `test -f '$(top_srcdir)/src/IMatrix.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IMatrix.cc
 
-ForwardDifference-Utility.obj: $(top_srcdir)/src/Utility.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Utility.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-Utility.Tpo -c -o ForwardDifference-Utility.obj `if test -f '$(top_srcdir)/src/Utility.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Utility.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Utility.cc'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-Utility.Tpo $(DEPDIR)/ForwardDifference-Utility.Po
-#	source='$(top_srcdir)/src/Utility.cc' object='ForwardDifference-Utility.obj' libtool=no \
+IMatrix.obj: $(top_srcdir)/src/IMatrix.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IMatrix.obj -MD -MP -MF $(DEPDIR)/IMatrix.Tpo -c -o IMatrix.obj `if test -f '$(top_srcdir)/src/IMatrix.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IMatrix.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IMatrix.cc'; fi`
+	$(am__mv) $(DEPDIR)/IMatrix.Tpo $(DEPDIR)/IMatrix.Po
+#	source='$(top_srcdir)/src/IMatrix.cc' object='IMatrix.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Utility.obj `if test -f '$(top_srcdir)/src/Utility.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Utility.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Utility.cc'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IMatrix.obj `if test -f '$(top_srcdir)/src/IMatrix.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IMatrix.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IMatrix.cc'; fi`
 
-ForwardDifference-Timer.o: $(top_srcdir)/src/Timer.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Timer.o -MD -MP -MF $(DEPDIR)/ForwardDifference-Timer.Tpo -c -o ForwardDifference-Timer.o `test -f '$(top_srcdir)/src/Timer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Timer.cpp
-	$(am__mv) $(DEPDIR)/ForwardDifference-Timer.Tpo $(DEPDIR)/ForwardDifference-Timer.Po
-#	source='$(top_srcdir)/src/Timer.cpp' object='ForwardDifference-Timer.o' libtool=no \
+Configuration.o: $(top_srcdir)/src/Configuration.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Configuration.o -MD -MP -MF $(DEPDIR)/Configuration.Tpo -c -o Configuration.o `test -f '$(top_srcdir)/src/Configuration.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Configuration.cc
+	$(am__mv) $(DEPDIR)/Configuration.Tpo $(DEPDIR)/Configuration.Po
+#	source='$(top_srcdir)/src/Configuration.cc' object='Configuration.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Timer.o `test -f '$(top_srcdir)/src/Timer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Timer.cpp
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Configuration.o `test -f '$(top_srcdir)/src/Configuration.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Configuration.cc
 
-ForwardDifference-Timer.obj: $(top_srcdir)/src/Timer.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Timer.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-Timer.Tpo -c -o ForwardDifference-Timer.obj `if test -f '$(top_srcdir)/src/Timer.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Timer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Timer.cpp'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-Timer.Tpo $(DEPDIR)/ForwardDifference-Timer.Po
-#	source='$(top_srcdir)/src/Timer.cpp' object='ForwardDifference-Timer.obj' libtool=no \
+Configuration.obj: $(top_srcdir)/src/Configuration.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Configuration.obj -MD -MP -MF $(DEPDIR)/Configuration.Tpo -c -o Configuration.obj `if test -f '$(top_srcdir)/src/Configuration.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Configuration.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Configuration.cc'; fi`
+	$(am__mv) $(DEPDIR)/Configuration.Tpo $(DEPDIR)/Configuration.Po
+#	source='$(top_srcdir)/src/Configuration.cc' object='Configuration.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Timer.obj `if test -f '$(top_srcdir)/src/Timer.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Timer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Timer.cpp'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Configuration.obj `if test -f '$(top_srcdir)/src/Configuration.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Configuration.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Configuration.cc'; fi`
 
-ForwardDifference-IMatrix.o: $(top_srcdir)/src/IMatrix.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-IMatrix.o -MD -MP -MF $(DEPDIR)/ForwardDifference-IMatrix.Tpo -c -o ForwardDifference-IMatrix.o `test -f '$(top_srcdir)/src/IMatrix.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IMatrix.cc
-	$(am__mv) $(DEPDIR)/ForwardDifference-IMatrix.Tpo $(DEPDIR)/ForwardDifference-IMatrix.Po
-#	source='$(top_srcdir)/src/IMatrix.cc' object='ForwardDifference-IMatrix.o' libtool=no \
+IRowColumnDS.o: $(top_srcdir)/src/IRowColumnDS.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IRowColumnDS.o -MD -MP -MF $(DEPDIR)/IRowColumnDS.Tpo -c -o IRowColumnDS.o `test -f '$(top_srcdir)/src/IRowColumnDS.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IRowColumnDS.cc
+	$(am__mv) $(DEPDIR)/IRowColumnDS.Tpo $(DEPDIR)/IRowColumnDS.Po
+#	source='$(top_srcdir)/src/IRowColumnDS.cc' object='IRowColumnDS.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-IMatrix.o `test -f '$(top_srcdir)/src/IMatrix.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IMatrix.cc
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IRowColumnDS.o `test -f '$(top_srcdir)/src/IRowColumnDS.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IRowColumnDS.cc
 
-ForwardDifference-IMatrix.obj: $(top_srcdir)/src/IMatrix.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-IMatrix.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-IMatrix.Tpo -c -o ForwardDifference-IMatrix.obj `if test -f '$(top_srcdir)/src/IMatrix.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IMatrix.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IMatrix.cc'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-IMatrix.Tpo $(DEPDIR)/ForwardDifference-IMatrix.Po
-#	source='$(top_srcdir)/src/IMatrix.cc' object='ForwardDifference-IMatrix.obj' libtool=no \
+IRowColumnDS.obj: $(top_srcdir)/src/IRowColumnDS.cc
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT IRowColumnDS.obj -MD -MP -MF $(DEPDIR)/IRowColumnDS.Tpo -c -o IRowColumnDS.obj `if test -f '$(top_srcdir)/src/IRowColumnDS.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IRowColumnDS.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IRowColumnDS.cc'; fi`
+	$(am__mv) $(DEPDIR)/IRowColumnDS.Tpo $(DEPDIR)/IRowColumnDS.Po
+#	source='$(top_srcdir)/src/IRowColumnDS.cc' object='IRowColumnDS.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-IMatrix.obj `if test -f '$(top_srcdir)/src/IMatrix.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IMatrix.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IMatrix.cc'; fi`
-
-ForwardDifference-Configuration.o: $(top_srcdir)/src/Configuration.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Configuration.o -MD -MP -MF $(DEPDIR)/ForwardDifference-Configuration.Tpo -c -o ForwardDifference-Configuration.o `test -f '$(top_srcdir)/src/Configuration.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Configuration.cc
-	$(am__mv) $(DEPDIR)/ForwardDifference-Configuration.Tpo $(DEPDIR)/ForwardDifference-Configuration.Po
-#	source='$(top_srcdir)/src/Configuration.cc' object='ForwardDifference-Configuration.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Configuration.o `test -f '$(top_srcdir)/src/Configuration.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Configuration.cc
-
-ForwardDifference-Configuration.obj: $(top_srcdir)/src/Configuration.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-Configuration.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-Configuration.Tpo -c -o ForwardDifference-Configuration.obj `if test -f '$(top_srcdir)/src/Configuration.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Configuration.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Configuration.cc'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-Configuration.Tpo $(DEPDIR)/ForwardDifference-Configuration.Po
-#	source='$(top_srcdir)/src/Configuration.cc' object='ForwardDifference-Configuration.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-Configuration.obj `if test -f '$(top_srcdir)/src/Configuration.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Configuration.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Configuration.cc'; fi`
-
-ForwardDifference-IRowColumnDS.o: $(top_srcdir)/src/IRowColumnDS.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-IRowColumnDS.o -MD -MP -MF $(DEPDIR)/ForwardDifference-IRowColumnDS.Tpo -c -o ForwardDifference-IRowColumnDS.o `test -f '$(top_srcdir)/src/IRowColumnDS.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IRowColumnDS.cc
-	$(am__mv) $(DEPDIR)/ForwardDifference-IRowColumnDS.Tpo $(DEPDIR)/ForwardDifference-IRowColumnDS.Po
-#	source='$(top_srcdir)/src/IRowColumnDS.cc' object='ForwardDifference-IRowColumnDS.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-IRowColumnDS.o `test -f '$(top_srcdir)/src/IRowColumnDS.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IRowColumnDS.cc
-
-ForwardDifference-IRowColumnDS.obj: $(top_srcdir)/src/IRowColumnDS.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -MT ForwardDifference-IRowColumnDS.obj -MD -MP -MF $(DEPDIR)/ForwardDifference-IRowColumnDS.Tpo -c -o ForwardDifference-IRowColumnDS.obj `if test -f '$(top_srcdir)/src/IRowColumnDS.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IRowColumnDS.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IRowColumnDS.cc'; fi`
-	$(am__mv) $(DEPDIR)/ForwardDifference-IRowColumnDS.Tpo $(DEPDIR)/ForwardDifference-IRowColumnDS.Po
-#	source='$(top_srcdir)/src/IRowColumnDS.cc' object='ForwardDifference-IRowColumnDS.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ForwardDifference_CXXFLAGS) $(CXXFLAGS) -c -o ForwardDifference-IRowColumnDS.obj `if test -f '$(top_srcdir)/src/IRowColumnDS.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IRowColumnDS.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IRowColumnDS.cc'; fi`
-
-gcolor-gcolor.o: gcolor.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-gcolor.o -MD -MP -MF $(DEPDIR)/gcolor-gcolor.Tpo -c -o gcolor-gcolor.o `test -f 'gcolor.cpp' || echo '$(srcdir)/'`gcolor.cpp
-	$(am__mv) $(DEPDIR)/gcolor-gcolor.Tpo $(DEPDIR)/gcolor-gcolor.Po
-#	source='gcolor.cpp' object='gcolor-gcolor.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-gcolor.o `test -f 'gcolor.cpp' || echo '$(srcdir)/'`gcolor.cpp
-
-gcolor-gcolor.obj: gcolor.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-gcolor.obj -MD -MP -MF $(DEPDIR)/gcolor-gcolor.Tpo -c -o gcolor-gcolor.obj `if test -f 'gcolor.cpp'; then $(CYGPATH_W) 'gcolor.cpp'; else $(CYGPATH_W) '$(srcdir)/gcolor.cpp'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-gcolor.Tpo $(DEPDIR)/gcolor-gcolor.Po
-#	source='gcolor.cpp' object='gcolor-gcolor.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-gcolor.obj `if test -f 'gcolor.cpp'; then $(CYGPATH_W) 'gcolor.cpp'; else $(CYGPATH_W) '$(srcdir)/gcolor.cpp'; fi`
-
-gcolor-driver.o: driver.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-driver.o -MD -MP -MF $(DEPDIR)/gcolor-driver.Tpo -c -o gcolor-driver.o `test -f 'driver.cc' || echo '$(srcdir)/'`driver.cc
-	$(am__mv) $(DEPDIR)/gcolor-driver.Tpo $(DEPDIR)/gcolor-driver.Po
-#	source='driver.cc' object='gcolor-driver.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-driver.o `test -f 'driver.cc' || echo '$(srcdir)/'`driver.cc
-
-gcolor-driver.obj: driver.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-driver.obj -MD -MP -MF $(DEPDIR)/gcolor-driver.Tpo -c -o gcolor-driver.obj `if test -f 'driver.cc'; then $(CYGPATH_W) 'driver.cc'; else $(CYGPATH_W) '$(srcdir)/driver.cc'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-driver.Tpo $(DEPDIR)/gcolor-driver.Po
-#	source='driver.cc' object='gcolor-driver.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-driver.obj `if test -f 'driver.cc'; then $(CYGPATH_W) 'driver.cc'; else $(CYGPATH_W) '$(srcdir)/driver.cc'; fi`
-
-gcolor-mmio.o: $(top_srcdir)/src/mmio.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-mmio.o -MD -MP -MF $(DEPDIR)/gcolor-mmio.Tpo -c -o gcolor-mmio.o `test -f '$(top_srcdir)/src/mmio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/mmio.cpp
-	$(am__mv) $(DEPDIR)/gcolor-mmio.Tpo $(DEPDIR)/gcolor-mmio.Po
-#	source='$(top_srcdir)/src/mmio.cpp' object='gcolor-mmio.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-mmio.o `test -f '$(top_srcdir)/src/mmio.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/mmio.cpp
-
-gcolor-mmio.obj: $(top_srcdir)/src/mmio.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-mmio.obj -MD -MP -MF $(DEPDIR)/gcolor-mmio.Tpo -c -o gcolor-mmio.obj `if test -f '$(top_srcdir)/src/mmio.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/mmio.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/mmio.cpp'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-mmio.Tpo $(DEPDIR)/gcolor-mmio.Po
-#	source='$(top_srcdir)/src/mmio.cpp' object='gcolor-mmio.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-mmio.obj `if test -f '$(top_srcdir)/src/mmio.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/mmio.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/mmio.cpp'; fi`
-
-gcolor-Matrix.o: $(top_srcdir)/src/Matrix.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Matrix.o -MD -MP -MF $(DEPDIR)/gcolor-Matrix.Tpo -c -o gcolor-Matrix.o `test -f '$(top_srcdir)/src/Matrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Matrix.cpp
-	$(am__mv) $(DEPDIR)/gcolor-Matrix.Tpo $(DEPDIR)/gcolor-Matrix.Po
-#	source='$(top_srcdir)/src/Matrix.cpp' object='gcolor-Matrix.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Matrix.o `test -f '$(top_srcdir)/src/Matrix.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Matrix.cpp
-
-gcolor-Matrix.obj: $(top_srcdir)/src/Matrix.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Matrix.obj -MD -MP -MF $(DEPDIR)/gcolor-Matrix.Tpo -c -o gcolor-Matrix.obj `if test -f '$(top_srcdir)/src/Matrix.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Matrix.cpp'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-Matrix.Tpo $(DEPDIR)/gcolor-Matrix.Po
-#	source='$(top_srcdir)/src/Matrix.cpp' object='gcolor-Matrix.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Matrix.obj `if test -f '$(top_srcdir)/src/Matrix.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Matrix.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Matrix.cpp'; fi`
-
-gcolor-CLI.o: $(top_srcdir)/src/CLI.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-CLI.o -MD -MP -MF $(DEPDIR)/gcolor-CLI.Tpo -c -o gcolor-CLI.o `test -f '$(top_srcdir)/src/CLI.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/CLI.cpp
-	$(am__mv) $(DEPDIR)/gcolor-CLI.Tpo $(DEPDIR)/gcolor-CLI.Po
-#	source='$(top_srcdir)/src/CLI.cpp' object='gcolor-CLI.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-CLI.o `test -f '$(top_srcdir)/src/CLI.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/CLI.cpp
-
-gcolor-CLI.obj: $(top_srcdir)/src/CLI.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-CLI.obj -MD -MP -MF $(DEPDIR)/gcolor-CLI.Tpo -c -o gcolor-CLI.obj `if test -f '$(top_srcdir)/src/CLI.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/CLI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/CLI.cpp'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-CLI.Tpo $(DEPDIR)/gcolor-CLI.Po
-#	source='$(top_srcdir)/src/CLI.cpp' object='gcolor-CLI.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-CLI.obj `if test -f '$(top_srcdir)/src/CLI.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/CLI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/CLI.cpp'; fi`
-
-gcolor-Utility.o: $(top_srcdir)/src/Utility.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Utility.o -MD -MP -MF $(DEPDIR)/gcolor-Utility.Tpo -c -o gcolor-Utility.o `test -f '$(top_srcdir)/src/Utility.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Utility.cc
-	$(am__mv) $(DEPDIR)/gcolor-Utility.Tpo $(DEPDIR)/gcolor-Utility.Po
-#	source='$(top_srcdir)/src/Utility.cc' object='gcolor-Utility.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Utility.o `test -f '$(top_srcdir)/src/Utility.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Utility.cc
-
-gcolor-Utility.obj: $(top_srcdir)/src/Utility.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Utility.obj -MD -MP -MF $(DEPDIR)/gcolor-Utility.Tpo -c -o gcolor-Utility.obj `if test -f '$(top_srcdir)/src/Utility.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Utility.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Utility.cc'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-Utility.Tpo $(DEPDIR)/gcolor-Utility.Po
-#	source='$(top_srcdir)/src/Utility.cc' object='gcolor-Utility.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Utility.obj `if test -f '$(top_srcdir)/src/Utility.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Utility.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Utility.cc'; fi`
-
-gcolor-Timer.o: $(top_srcdir)/src/Timer.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Timer.o -MD -MP -MF $(DEPDIR)/gcolor-Timer.Tpo -c -o gcolor-Timer.o `test -f '$(top_srcdir)/src/Timer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Timer.cpp
-	$(am__mv) $(DEPDIR)/gcolor-Timer.Tpo $(DEPDIR)/gcolor-Timer.Po
-#	source='$(top_srcdir)/src/Timer.cpp' object='gcolor-Timer.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Timer.o `test -f '$(top_srcdir)/src/Timer.cpp' || echo '$(srcdir)/'`$(top_srcdir)/src/Timer.cpp
-
-gcolor-Timer.obj: $(top_srcdir)/src/Timer.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Timer.obj -MD -MP -MF $(DEPDIR)/gcolor-Timer.Tpo -c -o gcolor-Timer.obj `if test -f '$(top_srcdir)/src/Timer.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Timer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Timer.cpp'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-Timer.Tpo $(DEPDIR)/gcolor-Timer.Po
-#	source='$(top_srcdir)/src/Timer.cpp' object='gcolor-Timer.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Timer.obj `if test -f '$(top_srcdir)/src/Timer.cpp'; then $(CYGPATH_W) '$(top_srcdir)/src/Timer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Timer.cpp'; fi`
-
-gcolor-IMatrix.o: $(top_srcdir)/src/IMatrix.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-IMatrix.o -MD -MP -MF $(DEPDIR)/gcolor-IMatrix.Tpo -c -o gcolor-IMatrix.o `test -f '$(top_srcdir)/src/IMatrix.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IMatrix.cc
-	$(am__mv) $(DEPDIR)/gcolor-IMatrix.Tpo $(DEPDIR)/gcolor-IMatrix.Po
-#	source='$(top_srcdir)/src/IMatrix.cc' object='gcolor-IMatrix.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-IMatrix.o `test -f '$(top_srcdir)/src/IMatrix.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IMatrix.cc
-
-gcolor-IMatrix.obj: $(top_srcdir)/src/IMatrix.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-IMatrix.obj -MD -MP -MF $(DEPDIR)/gcolor-IMatrix.Tpo -c -o gcolor-IMatrix.obj `if test -f '$(top_srcdir)/src/IMatrix.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IMatrix.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IMatrix.cc'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-IMatrix.Tpo $(DEPDIR)/gcolor-IMatrix.Po
-#	source='$(top_srcdir)/src/IMatrix.cc' object='gcolor-IMatrix.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-IMatrix.obj `if test -f '$(top_srcdir)/src/IMatrix.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IMatrix.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IMatrix.cc'; fi`
-
-gcolor-Configuration.o: $(top_srcdir)/src/Configuration.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Configuration.o -MD -MP -MF $(DEPDIR)/gcolor-Configuration.Tpo -c -o gcolor-Configuration.o `test -f '$(top_srcdir)/src/Configuration.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Configuration.cc
-	$(am__mv) $(DEPDIR)/gcolor-Configuration.Tpo $(DEPDIR)/gcolor-Configuration.Po
-#	source='$(top_srcdir)/src/Configuration.cc' object='gcolor-Configuration.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Configuration.o `test -f '$(top_srcdir)/src/Configuration.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/Configuration.cc
-
-gcolor-Configuration.obj: $(top_srcdir)/src/Configuration.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-Configuration.obj -MD -MP -MF $(DEPDIR)/gcolor-Configuration.Tpo -c -o gcolor-Configuration.obj `if test -f '$(top_srcdir)/src/Configuration.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Configuration.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Configuration.cc'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-Configuration.Tpo $(DEPDIR)/gcolor-Configuration.Po
-#	source='$(top_srcdir)/src/Configuration.cc' object='gcolor-Configuration.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-Configuration.obj `if test -f '$(top_srcdir)/src/Configuration.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/Configuration.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/Configuration.cc'; fi`
-
-gcolor-IRowColumnDS.o: $(top_srcdir)/src/IRowColumnDS.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-IRowColumnDS.o -MD -MP -MF $(DEPDIR)/gcolor-IRowColumnDS.Tpo -c -o gcolor-IRowColumnDS.o `test -f '$(top_srcdir)/src/IRowColumnDS.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IRowColumnDS.cc
-	$(am__mv) $(DEPDIR)/gcolor-IRowColumnDS.Tpo $(DEPDIR)/gcolor-IRowColumnDS.Po
-#	source='$(top_srcdir)/src/IRowColumnDS.cc' object='gcolor-IRowColumnDS.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-IRowColumnDS.o `test -f '$(top_srcdir)/src/IRowColumnDS.cc' || echo '$(srcdir)/'`$(top_srcdir)/src/IRowColumnDS.cc
-
-gcolor-IRowColumnDS.obj: $(top_srcdir)/src/IRowColumnDS.cc
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -MT gcolor-IRowColumnDS.obj -MD -MP -MF $(DEPDIR)/gcolor-IRowColumnDS.Tpo -c -o gcolor-IRowColumnDS.obj `if test -f '$(top_srcdir)/src/IRowColumnDS.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IRowColumnDS.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IRowColumnDS.cc'; fi`
-	$(am__mv) $(DEPDIR)/gcolor-IRowColumnDS.Tpo $(DEPDIR)/gcolor-IRowColumnDS.Po
-#	source='$(top_srcdir)/src/IRowColumnDS.cc' object='gcolor-IRowColumnDS.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(gcolor_CXXFLAGS) $(CXXFLAGS) -c -o gcolor-IRowColumnDS.obj `if test -f '$(top_srcdir)/src/IRowColumnDS.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IRowColumnDS.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IRowColumnDS.cc'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o IRowColumnDS.obj `if test -f '$(top_srcdir)/src/IRowColumnDS.cc'; then $(CYGPATH_W) '$(top_srcdir)/src/IRowColumnDS.cc'; else $(CYGPATH_W) '$(srcdir)/$(top_srcdir)/src/IRowColumnDS.cc'; fi`
 
 .cpp.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -857,6 +671,7 @@ uninstall-am: uninstall-INCLUDEHEADERS uninstall-binPROGRAMS
 	tags uninstall uninstall-INCLUDEHEADERS uninstall-am \
 	uninstall-binPROGRAMS
 
+#gcolor_CXXFLAGS = $(CPP_PROFILING_FLAGS)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

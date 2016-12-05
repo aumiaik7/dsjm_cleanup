@@ -1,3 +1,7 @@
+#DSJM_FLAGS = $(EXTRA_FLAGS)  -O3
+#AM_CPPFLAGS =  $(DSJM_FLAGS) 
+#AM_LDFLAGS = $(DSJM_FLAGS)
+#AM_CXXFLAGS= -O3
 EXTRA_DIST = MatrixTest.h ApplicationTest.h HeapPQTest.hh
 
 CORE_SOURCE_FILES = $(top_srcdir)/src/mmio.cpp $(top_srcdir)/src/Matrix.cpp  $(top_srcdir)/src/CLI.cpp $(top_srcdir)/src/Utility.cc $(top_srcdir)/src/Timer.cpp  $(top_srcdir)/src/IMatrix.cc  $(top_srcdir)/src/Configuration.cc  $(top_srcdir)/src/IRowColumnDS.cc 

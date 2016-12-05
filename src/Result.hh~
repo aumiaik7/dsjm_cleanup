@@ -51,7 +51,7 @@ public:
             cout << "    segmented: " << "no" << endl; ;
 
 	*/
-	cout << inputFile <<","<<configuration->oMethod;
+	cout << inputFile <<",";
     }
 
     void printMatrixInfo()
@@ -60,13 +60,15 @@ public:
         //cout << "    matrix_N: " << matrix_N << endl;
         //cout << "    matrix_NNZ: " << matrix_NNZ << endl;
 
-	
+	cout<<<<matrix_M<<","<<matrix_N<<","<<matrix_NNZ<<","<<CLI::method_to_string(configuration->oMethod)<<",";
     }
 
     void printResult()
     {
 	
-	cout<<","<<totalColors<<endl;
+	if(ordering_time<0)
+		ordering_time = 0;
+	cout<<ordering_time<<","<<coloring_time<<","<<totalColors<<endl;
         //cout << "    totalColors: " << totalColors << endl;
         //if (ordering_time >= 0)
         //    cout << "    ordering_time: " << ordering_time << endl;
