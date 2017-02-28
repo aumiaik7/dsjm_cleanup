@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include "CLI.h"
+#include <boost/dynamic_bitset.hpp>
 
 
 ///

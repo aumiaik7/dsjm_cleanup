@@ -1238,6 +1238,300 @@ int Matrix::sdo(int *color)
     int *tag = NULL;
     int *seqTag = NULL;
     int maxgrp = 0;
+    int *inducedDeg = NULL;	
+
+    boost::dynamic_bitset<>** bitsets;
+
+   
+    
+
+
+    // for(boost::dynamic_bitset<>::size_type i = 0; i < x.size(); i++)
+    //     std::cout << x[i];
+
+    // std::cout << "\n";
+    // std::cout << x << "\n"; 
+
+
+    try
+    {
+        // The following three integer arrays consist of a doubly linked satDeg. It acts
+        // as a bucket priority queue for the incidence degree of the columns.
+
+        // head(deg) is the first column in the deg satDeg unless head(deg) =
+        // 0. If head(deg) = 0 there are no columns in the deg satDeg.
+
+        // previous(col) is the column before col in the incidence satDeg unless
+        // previous(col) = 0. If previous(col) = 0,  col is the first column in this
+        // incidence satDeg.
+
+        // next(col) is the column after col in the incidence satDeg unless
+        // next(col) = 0. If next(col) = 0,  col is the last column in this incidence
+        // satDeg.
+
+        head     = new int[N];
+        next     = new int[N+1];
+        previous = new int[N+1];
+
+        tag      = new int[N+1]; // for each unordered column, tag[jcol] stores
+                                 // the number of order it has been processed for,
+                                 // and for ordered/colored column, it stores N
+
+        seqTag      = new int[N+1]; // This array of size n+1 is used for
+                                    // searching the lowest possible color for a
+                                    // column jcol.
+
+        satDeg = new int[N+1]; // Array of size n+1, for each unordered column j,
+                               // satDeg[j] is the saturation degree, where j =
+                               // 1,2,3,...,n.
+                               // For each ordered column j, satDeg[j] is the
+                               // order in Staruation Degree Ordering.
+        inducedDeg = new int[N+1]; //Degree of columns in G(V\V')
+
+        bitsets = new boost::dynamic_bitset<>*[N+1]; 
+
+
+
+
+        // Sort the indices of degree array <id:ndeg> in descending order, i.e
+        // ndeg(tag(i)) is in descending order , i = 1,2,...,n
+        //
+        // <id:tag> is used here as an in-out-parameter to <id:indexSort> routine. It
+        // will hold the sorted indices. The two arrays, <id:previous> and
+        // <id:next> is used for temporary storage required for <id:indexSort>
+        // routine.
+        MatrixUtility::indexsort(N,N-1, ndeg,-1,tag , previous, next);
+
+        // Initialize the doubly linked list, <id:satDeg>, and <id:tag> and <id:order> integer array.
+        for (int jp = N; jp >= 1; jp--)
+        {
+            int ic = tag[jp]; /* Tag is sorted indices for now */
+            head[N-jp] = 0;
+
+            addColumn(head,next,previous,0,ic);
+
+            tag[jp] = 0;
+            satDeg[jp] = 0;
+            color[jp] = N;
+            seqTag[jp] = 0;
+            *(bitsets+jp) = NULL; 
+	    inducedDeg[jp] = ndeg[jp];
+        }
+
+        int maximalClique = 0;
+        int numord = 1;
+
+        // determine the maximal search length to search for maximal degree in
+        // the maximal incidence degree satDeg.
+        int maxlst = 0;
+
+        for( int ir = 1; ir <= M; ir++)
+        {
+            maxlst = maxlst + MatrixUtility::square(ipntr[ir+1] - ipntr[ir]);
+        }
+
+        maxlst = maxlst / N;
+
+        int maxsat = 0;
+        while(true)
+        {
+            int jp;
+            int jcol;
+            // Find a column jp with the maximal saturation degree.
+            while(true)
+            {
+                jp = head[maxsat];
+                if(jp > 0)
+                    break;
+                maxsat--;
+            }
+
+            // We search a distance of maxLast length to find the colum with
+            // maximal degree in the original graph.
+            for(int numlst = 1,numwgt = -1;  numlst <= maxlst; numlst++)
+            {
+                //if(ndeg[jp] > numwgt)
+		if(inducedDeg[jp] > numwgt)
+                {
+                    //numwgt = ndeg[jp];
+		    numwgt = inducedDeg[jp];	
+                    jcol = jp;
+                }
+                jp = next[jp];
+                if(jp <= 0)
+                    break;
+            }
+	    //cout<<"Column :"<<jcol<<" Degree: "<<ndeg[jcol]<<" Induced Deg: "<<inducedDeg[jcol]<<endl;	
+            // To Color the column <id:jcol> with smallest possible number
+            // we find all columns adjacent to column <id:jcol>.
+            // and find the color that is not used yet.
+
+            for(int jp = jpntr[jcol] ; jp < jpntr[jcol+1]  ; jp++)
+            {
+                int ir = row_ind[jp];
+
+                for( int ip = ipntr[ir]; ip < ipntr[ir + 1] ; ip++)
+                {
+                    int ic = col_ind[ip];
+                    seqTag[color[ic]] = jcol;
+                }
+            }
+
+            int newColor;
+            for (newColor = 1; newColor <= maxgrp; newColor++)
+            {
+                if(seqTag[newColor] != jcol)
+               		break;
+		//     goto SDO_L50;
+            }
+	    //changed this to remove the goto statement
+            if(newColor>maxgrp)	
+            {
+			maxgrp = maxgrp + 1;
+
+			// This position means we are creating a new color.
+			// So, create a new bitset.
+			// boost::dynamic_bitset<> x(N);
+			*(bitsets+maxgrp) = new boost::dynamic_bitset<>(N+1,0);
+			// *(bitsets+maxgrp)->resize(N); 
+            }
+
+        //SDO_L50:
+            color[jcol] = newColor;
+            (*(bitsets+newColor))->set(jcol); 
+
+            satDeg[jcol] = numord;
+            numord++;
+
+            // Termination Test.
+            if(numord > N)
+            {
+                break;
+            }
+
+            // delete column jcol from the maxsat queue.
+            deleteColumn(head,next,previous,maxsat,jcol);
+
+            tag[jcol] = N;
+
+            // Update the Saturation Degree for the Neighbors of
+            // <id:jcol>
+
+            for (int jp = jpntr[jcol] ; jp < jpntr[jcol+1] ; jp++)
+            {
+                int ir = row_ind[jp];
+
+                for( int ip = ipntr[ir] ; ip < ipntr[ir+1] ; ip++)
+                {
+                    int ic = col_ind[ip];
+
+                    if(tag[ic] < numord)
+                    {
+                        tag[ic] = numord;
+
+                        // TODO: Eliminate this search using a bit vector. 
+                        // bool isNewColor = true;
+
+                        // // search the neighborhood of ic
+                        // for (int x_jp = jpntr[ic]; x_jp < jpntr[ic+1] ; x_jp++)
+                        // {
+                        //     int x_ir = indRow[x_jp];
+                        //     for (int x_ip = ipntr[ir]; x_ip < ipntr[ir+1]; x_ip++)
+                        //     {
+                        //         int x_ic = indCol[x_ip];
+                        //         if(color[x_ic] == newColor)
+                        //         {
+                        //             isNewColor = false;
+                        //             goto SDO_ISNEWCOLOR;
+                        //         }
+                        //     }
+                        // }
+                        // 
+                        // // ========================================
+                        // SDO_ISNEWCOLOR:
+                        //bool isNewColor = (*(bitsets+newColor))->test(jcol); 
+			bool isNewColor = (*(bitsets+newColor))->test(ic); 
+                        if(!isNewColor)
+                        {
+			    (*(bitsets+newColor))->set(ic); 	
+                            // update the pointers to the current saturation
+                            // degree lists.
+                            satDeg[ic]++;
+                            // update the maxsat.
+                            maxsat = max(maxsat,satDeg[ic]);
+
+                            deleteColumn(head,next,previous,satDeg[ic]-1,ic);
+                            addColumn(head,next,previous,satDeg[ic],ic);
+                        }
+			inducedDeg[ic] = inducedDeg[ic] - 1; 
+                    }
+                }
+            }
+
+        }
+    }
+    catch(std::bad_alloc)
+    {
+        std::cerr << "ERROR: Memory Exhausted " << std::endl;
+
+        if(head) delete[] head;
+        if(previous) delete[] previous;
+        if(next) delete[] next;
+        if(tag) delete[] tag;
+        if(seqTag) delete[] seqTag;
+        if(satDeg) delete[] satDeg;
+
+       if(bitsets)
+        {
+	    /*	
+            for(int i =0 ; i <= N; i++)
+            {
+                if(bitsets+i)
+                {
+                    delete (*(bitsets+i)); 
+                } 
+            }
+	    */	
+            delete[] bitsets; 
+        } 
+	
+        return 0;
+    }
+
+    if(head) delete[] head;
+    if(previous) delete[] previous;
+    if(next) delete[] next;
+    if(tag) delete[] tag;
+    if(seqTag) delete[] seqTag;
+    if(satDeg) delete[] satDeg;
+
+    if(bitsets)
+    {
+        /*for(int i =0 ; i <= N; i++)
+        {
+            if(bitsets+i)
+            {
+                delete (*(bitsets+i)); 
+            } 
+        }
+	*/	
+        delete[] bitsets; 
+    } 
+
+    return maxgrp;
+}
+/* sdo() ENDS*/
+
+/* prev sdo
+int Matrix::sdo(int *color)
+{
+    int *satDeg = NULL;
+    int *head = NULL;
+    int *next = NULL;
+    int *previous = NULL;
+    int *tag = NULL;
+    int *seqTag = NULL;
+    int maxgrp = 0;
 
     try
     {
@@ -1288,7 +1582,7 @@ int Matrix::sdo(int *color)
         // Initialize the doubly linked list, <id:satDeg>, and <id:tag> and <id:order> integer array.
         for (int jp = N; jp >= 1; jp--)
         {
-            int ic = tag[jp]; /* Tag is sorted indices for now */
+            int ic = tag[jp]; //Tag is sorted indices for now 
             head[N-jp] = 0;
 
             addColumn(head,next,previous,0,ic);
@@ -1460,7 +1754,8 @@ int Matrix::sdo(int *color)
 
     return maxgrp;
 }
-/* sdo() ENDS*/
+*/
+
 
 int Matrix::updateDegreesToUVertices(int n, int jcol,int maxdeg, int *jpntr,int *row_ind,
                                      int *ipntr,int *col_ind, bool * inU, int *tag, int *u_tag,

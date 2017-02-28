@@ -41,6 +41,7 @@ public:
     int greedycolor(int *list, int *ngrp);
     int rlf(int *ngrp);
     int sdo(int *ngrp);
+    int slo_rlf(int *list, int *ngrp);
 
     Matrix* getSeedMatrix(int *ngrp);
 
