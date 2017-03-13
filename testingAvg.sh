@@ -1,10 +1,10 @@
 #!/bin/bash
 >Testing_script/testResultsAvg.csv
 >testTrack
-iterations=5
+iterations=1
 
-	#for file in /dfs/Data_MM/*.mtx
-	for file in ~/Data_DSJM/*.mtx
+	for file in /dfs/Data_MM/*.mtx
+	#for file in ~/Data_DSJM/*.mtx
 	do
 	echo "-----------------File Name: $file -------------------">>testTrack
 	

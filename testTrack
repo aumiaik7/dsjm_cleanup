@@ -1,40 +1,35 @@
------------------File Name: /home/khanai/Data_DSJM/af23560.mtx -------------------
+-----------------File Name: /dfs/Data_MM/roadNet-PA.mtx -------------------
 SLO Iteration 0
-SLO Iteration 1
-SLO Iteration 2
-SLO Iteration 3
-SLO Iteration 4
 IDO Iteration 0
-IDO Iteration 1
-IDO Iteration 2
-IDO Iteration 3
-IDO Iteration 4
 RLF Iteration 0
-RLF Iteration 1
-RLF Iteration 2
-RLF Iteration 3
-RLF Iteration 4
 SDO Iteration 0
-SDO Iteration 1
-SDO Iteration 2
-SDO Iteration 3
-SDO Iteration 4
--------------Done Ordering and Coloring for /home/khanai/Data_DSJM/af23560.mtx -----------------
+-------------Done Ordering and Coloring for /dfs/Data_MM/roadNet-PA.mtx -----------------
 
------------------File Name: /home/khanai/Data_DSJM/cage11.mtx -------------------
+-----------------File Name: /dfs/Data_MM/roadNet-TX.mtx -------------------
 SLO Iteration 0
-SLO Iteration 1
-SLO Iteration 2
-SLO Iteration 3
-SLO Iteration 4
 IDO Iteration 0
-IDO Iteration 1
-IDO Iteration 2
-IDO Iteration 3
-IDO Iteration 4
 RLF Iteration 0
-RLF Iteration 1
-RLF Iteration 2
-RLF Iteration 3
-RLF Iteration 4
 SDO Iteration 0
+-------------Done Ordering and Coloring for /dfs/Data_MM/roadNet-TX.mtx -----------------
+
+-----------------File Name: /dfs/Data_MM/sgpf5y6.mtx -------------------
+SLO Iteration 0
+IDO Iteration 0
+RLF Iteration 0
+SDO Iteration 0
+-------------Done Ordering and Coloring for /dfs/Data_MM/sgpf5y6.mtx -----------------
+
+-----------------File Name: /dfs/Data_MM/soc-sign-epinions.mtx -------------------
+SLO Iteration 0
+IDO Iteration 0
+RLF Iteration 0
+SDO Iteration 0
+-------------Done Ordering and Coloring for /dfs/Data_MM/soc-sign-epinions.mtx -----------------
+
+-----------------File Name: /dfs/Data_MM/web-NotreDame.mtx -------------------
+SLO Iteration 0
+IDO Iteration 0
+RLF Iteration 0
+SDO Iteration 0
+-------------Done Ordering and Coloring for /dfs/Data_MM/web-NotreDame.mtx -----------------
+

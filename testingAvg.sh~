@@ -3,8 +3,8 @@
 >testTrack
 iterations=5
 
-	#for file in /dfs/Data_MM/*.mtx
-	for file in ~/Data_DSJM/*.mtx
+	for file in /dfs/Data_MM/*.mtx
+	#for file in ~/Data_DSJM/*.mtx
 	do
 	echo "-----------------File Name: $file -------------------">>testTrack
 	
@@ -171,7 +171,7 @@ iterations=5
 		echo "$file"",""${split_res[1]}"",""${split_res[2]}"",""${split_res[3]}"",""${split_res[4]}"","$avg_ordering_time","$avg_coloring_time","$total_time",""${split_res[7]}">>Testing_script/testResultsAvg.csv
 
 		#echo "-------------------Done SDO for $file">>testTrack
-		echo "-------------Done Ordering and Coloring for $file -----------------\n">>testTrack
+		echo -e "-------------Done Ordering and Coloring for $file -----------------\n">>testTrack
 
 	done
 	echo "Done!!"
