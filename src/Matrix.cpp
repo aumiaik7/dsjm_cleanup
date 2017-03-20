@@ -348,7 +348,7 @@ bool Matrix::slo(int *list)
  */
 bool Matrix::ido(int *order )
 {
-    int *head,*previous, *next, *tag;
+    int *head,*previous, *next, *tag, *inducedDeg;
     try
     {
 
@@ -366,6 +366,8 @@ bool Matrix::ido(int *order )
         // next(col) = 0. If next(col) = 0,  col is the last column in this incidence
         // list.
 
+	// inducedDeg(col) is the degree of column in G(V\V')
+
         // if col is in un-ordered column, then order[col] is the incidence
         // degree of col to the graph induced by the ordered columns. If col is
         // an ordered column, then order[col] is the incidence-degree order of
@@ -374,7 +376,7 @@ bool Matrix::ido(int *order )
         head = new int[N];
         previous = new int[N+1];
         next = new int[N+1];
-
+	inducedDeg = new int[N+1]; 
 
         tag = new int[N+1]; // Temporary array, used for marking ordered columns
 
@@ -398,6 +400,7 @@ bool Matrix::ido(int *order )
 
             tag[jp] = 0;
             order[jp] = 0;
+	    inducedDeg[jp] = ndeg[jp];	
         }
 
         // determine the maximal search length to search for maximal degree in
@@ -441,9 +444,11 @@ bool Matrix::ido(int *order )
                 // maximal degree in the original graph.
                 for(int numlst = 1,  numwgt = -1; numlst <= maxLast; numlst++)
                 {
-                    if (ndeg[jp] > numwgt)
+                    //if (ndeg[jp] > numwgt)
+		    if (inducedDeg[jp] > numwgt)	
                     {
-                        numwgt = ndeg[jp];
+                        //numwgt = ndeg[jp];
+			numwgt = inducedDeg[jp];
                         jcol = jp;
                     }
                     jp = next[jp];
@@ -490,6 +495,7 @@ bool Matrix::ido(int *order )
 
                         // add column ic to the incidence+1 list.
                         addColumn(head,next,previous,incidence+1,ic);
+			inducedDeg[ic] = inducedDeg[ic] - 1; 
                     }
                 }
             }
@@ -522,6 +528,7 @@ bool Matrix::ido(int *order )
     if(previous) delete[] previous;
     if(next) delete[] next;
     if(tag) delete[] tag;
+    if(inducedDeg) delete[] inducedDeg;	
 
     return true;
 
@@ -1504,6 +1511,7 @@ int Matrix::sdo(int *color)
     if(tag) delete[] tag;
     if(seqTag) delete[] seqTag;
     if(satDeg) delete[] satDeg;
+    if(inducedDeg) delete[] inducedDeg;
 
     if(bitsets)
     {
